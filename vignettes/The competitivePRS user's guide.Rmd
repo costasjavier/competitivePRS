@@ -1,0 +1,294 @@
+---
+title: "The competitivePRS user's guide"
+author: "Javier Costas"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{The competitivePRS user's guide}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+knitr::opts_knit$set(root.dir = normalizePath(".."))
+```
+
+##Table of Contents
+1. [Introduction](#intro)
+2. [Installing the competitivePRS package](#install)
+3. [Workflow](#workflow)    
+  3.1 [From genes to SNPs](#map)    
+  3.2 [Calculation of PRS and statistical analysis by logistic regression](#DR2)    
+  3.3 [Generation of random SNP sets matching the actual SNP set by some genomic properties](#perm)   
+  3.4 [Estimation of significance by permutation](#sign)    
+  3.5 [Visual inspection of result](#plot)    
+4. [References](#ref)
+5. [Contact](#email)
+
+##1. Introduction <a name="intro"></a>
+
+Genome-wide association studies (GWAs) revealed that the genetic basis of complex diseases
+is highly polygenic, i.e., many common single nucleotide variants (SNPs) along the genome
+contribute to the disease, each one conferring a very low risk. As a consequence, methods
+to estimate the collective effect of SNPs *in masse* on disease risk have been developed.
+One popular method estimates risk alleles and effects in GWAS discovery samples of large
+size and calculates a polygenic risk score (PRS) in target GWAS samples as the sum of risk
+alleles weighted by their effects (logarithm of OR), as determined in the GWAS discovery sample.
+See [Wray et al. (2015)](#ref) for an explanation of the method. 
+
+The PRS may be based on all SNPs from a discovery GWAS data set, those under a *P* value threshold, or SNPs selected
+by biological criteria, such as those in genes belonging to a specific gene set (for instance,
+genes involved in stress-response) or genomic feature (for instance, SNPs in active enhancers
+in the relevant tissue for the disease). As a consequence of the high polygenicity of most complex diseases, it is
+expected that a large proportion of SNP sets with enough size will be associated with the disease.  
+
+The `competitivePRS` R package is a tool for the estimation of PRS
+of a SNP set, and calculation of its significance in a target case-control study based on
+comparison of the Nagelkerke's pseudo-R^2^ of the actual SNP set to random permutations
+of SNP sets matching the actual SNP set by a series of properties such as linkage disequilibrium (LD) pattern, minor allele frequency (MAF), distance to transcription start sites, and gene density. The scientific question to answer
+is not if the PRS based on the SNP set is associated with disease status but if it is more
+associated than a random SNP set with similar properties of LD, MAF and position in relation
+to genes. Because of that, it is considered a competitive test.
+
+##2. Installing the competitivePRS package <a name="install"></a>
+
+`competitivePRS` is distributed as a source code at GitHub. Therefore, the best way to install
+it is using the `devtools` package.
+
+```{r eval = FALSE}
+library(devtools)
+install_github("competitivePRS")
+```
+
+The dependencies of `competitivePRS` are `GenomicRanges`, to map SNPs to genes; and `rms`
+to perform logistic regression analysis.
+
+```{r message = FALSE, warning = FALSE}
+library(GenomicRanges)
+library(rms)
+library(competitivePRS)
+```
+
+In addition, **PLINK 1.9** ([Chang et al., 2015](#ref)) has to be installed in the PATH. The **PLINK** executables must be downloaded from the **[PLINK](https://www.cog-genomics.org/plink2/)** site.
+
+##3. Workflow <a name="workflow"></a>
+
+For use of `competitivePRS`, the user needs a summary statistic for a GWAS discovery sample,
+one or several SNP (or gene) sets to test, and genotyping data along the genome for a target
+case-control sample. The genotyping data have to be in the **PLINK** binary format. This
+common format stores the data in three files, with the extensions *"bim"*, *"fam"*,  and *"bed"*,  representing SNPs information, subjects information, and genotyping results, respectively.
+
+This tutorial explains the different steps implemented in `competitivePRS` to obtain a permuted *P* value for the significance of a SNP set in comparison with genomic background, i.e. random SNP sets with similar properties of LD, MAF and location in reference to genes.
+
+###3.1. From genes to SNPs <a name="map"></a>
+
+The `Map_genestoSNPs` function takes five arguments. The first argument, `geneset` is a list of genes using
+the HGNC symbol (such as SLC39A8) or HGNC_ID (such as 20862) for identification, but never
+a combination of both. This list may be an array or a dataframe with just one column. Please, 
+note that gene symbols are in capital letters. For instance,
+
+```{r}
+my.gene.list <- c("COMT", "PRODH", "TTC28", "MTMR3", "FFFF")
+my.gene.list
+```
+
+Alternatively, the list may be read from a file:
+
+```{r}
+my.gene.list <- read.table("~/competitivePRS/data/ex_genelist.txt", header = F)
+head(my.gene.list)
+```
+
+The second argument is a string with the full `path.to.plink.files`, where the three files of the **PLINK** binary
+format are present. These files store the genotype data of the target sample file, the user's data. The third argument is a string indicating the name of the **PLINK** binary file, without extension. The four argument is an array of two numbers, indicating the length in kb of
+extra bases at the 5' and 3' edges of the exonic region of a gene to be considered as part of a gene, respectively. The final argument is a string indicating the name of the output file to write 
+the list of genes not identified. This file will be written in the `path.to.plink.files` directory.
+A typical use may be:
+
+```{r}
+my.bim <- read.table("~/competitivePRS/data/exPLINK.bim")
+head(my.bim)
+my_SNP_list <- Map_genestoSNPs(geneset = my.gene.list, path.to.plink.files = "~/competitivePRS/data/", bfile = "exPLINK", extra.kb = c(35,10), output = "my_output_1")
+head(my_SNP_list)
+```
+
+In this case, the SNPs located between 35 kb upstream and 10 kb downstream of each gene from
+the supplied list are assigned to it. The default value is `extra.kb=c(0,0)`, to limit to SNPs to those between the first and last exonic bases of a gene. This function generates a dataframe of one column with the SNPs in the genotype data mapping on the genes in the supplied list , identified by chromosome and position (ex. 4:103188709). A message in the console indicates the number of genes not found. This problem usually originates by the use of different versions of the genome. `competitivePRS` uses the NCBI37.3 (hg19) gene location.
+
+###3.2. Calculation of PRS and statistical analysis by logistic regression <a name="DR2"></a>
+
+This may be the next step after generation of a SNP set by the previous step or, alternatively,
+be the first step if the researcher begins the analysis with a SNP set selected by other way. In
+this case, the SNPs have to be identified by chr:position (ex. 4:103188709), and have to be
+a dataframe object of just one column. If there are additional columns, only the first column
+is used.
+
+The required function, `Calculate_DR2Nagelkerke`, begins with a generation of new **PLINK** binary bfiles with
+the column *snpid* corresponding to *chr:position*, and removing all SNPs with the same *chr:position*, 
+usually, duplicate SNPs with different IDs or triallelic SNPs. If the logical argument `amb.remove` is set to `TRUE`,
+ SNPs with strand anbiguity (A<->T and C<->G) are removed. The new **PLINK** binary files are written to the `path.to.plink.files`, using the generic name *"tmp"*.  
+
+Then, the function calls **PLINK** to perform LD-clumping and scoring. The objective of LD-clumping (also 
+known as informed pruning) is to generate a SNP subset with SNPs in approximate linkage equilibrium,
+choosing the most significant SNP in the GWAS discovery sample among those SNPs in LD.
+The clumping is done with the following arguments: *"--clump-kb 500 --clump-p1 1 --clump-p2 1 --clump-r2 0.1"* (see the **PLINK** manual for details). A *P~threshold~* at GWAS discovery sample for 
+inclusion of SNPs in the PRS calculation may be specified by the user. Taking into account the rationale under the
+permutation test of `competitivePRS`, a liberal *P~threshold~*  is more appropriate. If the *P~threshold~* is very restrictive, the PRS from a gene set may be represented by very few SNPs and genes. In addition, if the GWAS discovery sample has a reasonable power, rejection of the null hypothesis under a 
+very restrictive *P~threshold~* is obvious and lack interest. Imaging a *P~threshold~* = 1e^-5^, if any SNP from the gene set reach this *P* value, a PRS based on these SNPs is expected to explain more variance on the trait
+than any set of random SNPs. Testing this hypothesis is not particularly interesting. The default value of the `P.thershold` argument is 1, that is, inclusion of all the SNPs, irrespective of the *P* value. 
+
+Then, a logistic regression analysis, using the `rms` package, is carried out, allowing for 
+the use of covariates. The percentage of SNPs from the PRS model that failed in a particular
+sample (i.e. missing genotypes) is included as a covariate by default. In addition, if the user 
+chooses to calculate a better coefficient of determination than Nagelkerke's pseudo-R^2^ (as
+described in [Lee et al., 2012](#ref)), its value is also included. In this case, an array indicating disease 
+prevalence and proportion of cases in the target sample have to be passed to the `better.coef` argument.
+
+In this example, first I create the  `path.to.plink.files` argument, needed to read the **PLINK** files. Alternatively, the user may write the path directly.
+
+```{r}
+wd <- getwd()
+path <- paste0(wd,"/data/")
+```
+
+Two data sets are read to a dataframe from file. The first one corresponds to data from summary statistics of the GWAS discovery sample, including a minimum of these columns *"snpid"*, *"a1"*, *"p"*,*"effect"*. If the logical argument `amb.remove` is set to `TRUE`, and additional column, *a2*, is also required.
+
+```{r}
+ex_summGWAS <- read.table("data/conc_GWAS", header = T)
+head(ex_summGWAS)
+```
+
+The second one is a data set with information of covariates. This is an optional file, in case covariates are included in the logistic regression model.
+Typical covariates in this type of studies include sex, age, and main PCA (or MDS) dimensions to control for
+population substructure. The file has to include as many covariates as needed, with a header with covariate
+names. The covariates to include in the model have to be specified, therefore, this file may contain more
+covariates than the useful ones. The Dependent Variable, "PHENO", is taken from the **PLINK** *"fam"* file. A "IID" column is required for sample identification.
+
+```{r}
+Covariates <- read.table("data/ex_Covariates", header = T)
+head(Covariates)
+```
+
+For example:
+
+```{r}
+PRS_analysis <- Calculate_DR2Nagelkerke(SNPs.list = my_SNP_list, sumGWAS = ex_summGWAS, Cov = Covariates, path.to.plink.files = path, bfile = "exPLINK", P.threshold = 0.5, amb.remove = T,
+cov.names = c("Sex","PCA2"), better.coef = c(0.05,0.5), output.file = "my_output_2")
+```
+
+The function returns a list of four elements, the increase in Nagelkerke's pseudo-R^2^ after adding 
+the standardized PRS to a model including only covariates, an array with the SNPs present in the PRS
+model (needed as input of the `Generate_permutationSets` function), the summary of the fitted 
+logistic regression model, for inspection by the user, and a better coefficient of determination (or "n.a." if no requested).
+
+```{r}
+PRS_analysis$`Pseudo-R2`
+```
+```{r}
+PRS_analysis$Input_perm
+``` 
+```{r}
+PRS_analysis$Logistic_model
+```
+```{r}
+PRS_analysis$Better_coef
+```
+
+The Independent Variables in the model are *"st.score"*, corresponding to the standardized PRS;
+*"miss"*, corresponding to the *"missing genotypes"* covariate; and the remaining optional covariates.
+
+In addition, these and additional data are stored in the output file to facilitate latter inspection of results.
+
+It is important to note that the GWAS discovery sample and the GWAS target sample have to be concordant in terms of DNA strand to call alleles. Lack of concordance is easy to identify in some cases, as the existence of more than two alleles. This is shown in the **PLINK** output as a warning message with the number of skipped SNPs as a consequence of allele mismatches. But in some instances (A/T or C/G SNPs), the mismatch is undetectable. `competitivePRS` does not deal with this problem. It is responsibility of the user to check the two GWAS samples for strand concordance, flipping strand or removing ambiguous SNPs before the analysis. 
+
+###3.3. Generation of random SNP sets matching the actual SNP set by some genomic properties <a name="perm"></a>
+
+In the example above, the PRS was not significant. But assuming it was, an additional question has to be
+solved. Is the PRS for this SNP set more explanative than random SNP sets along the genome? 
+The `competitivePRS` package addresses this question by permutations. The first step is to create random SNP sets with the same size of the original one and matching the actual SNPs by several features such as LD pattern, MAF, gene density, or distance to the nearest transcription start site. This is achieved by the `Generate_permutationTest` function. This function generates random sets of SNPs approximately matching the actual SNP set in the above-mentioned properties, based on the 1000 genomes European population, taking data from **SNPsnap** ([Pers et al., 2015](#ref)). The extended Major Histocompatibility Complex (chr6, from 25912984 to 33290793 in hg19) was excluded due to its complex linkage disequilibrium structure.
+For faster computation,  the SNPs from **SNPsnap** were previously classified in sets of similar characteristics. Specifically, the SNPs were classified by deciles except for gene counts, due to the excess of SNPs with low gene counts. Thus,
+80.3% of SNPs present 0-4 gene counts. The classes to match were 0, 1, 2, 3, 4, and two additional classes, evenly distributed.
+Those SNPs not present in the **SNPsnap** data set or without any matched SNP in the **SNPsnap** data set are included in
+each permutation, to get the same number of SNPs than in the original SNP set.
+
+To run the function, five arguments have to be passed. `input.perm` is an array with the actual SNPs to match. This is the second element of the list generated by `Calculate_DR2Nagelkerke`, in our example, `PRS_analysis[[2]]`. The `n.perm`
+argument indicates the required number of permutations. `bfile` is an string with the name of the **PLINK** binary file (without extension) with actual data. The "tmp" name, corresponding to the bfile generated by the `Calculate_DR2Nagelkerke` function, is used by default.
+The other two arguments are in common to the `Calculate_DR2Nagelkerke` function, the summary statistics of the GWAS discovery sample, and the path to to the three **PLINK** binary files (*".bed"*, *".bim"*, *".fam"*).
+
+The function first creates a subset of the SNPsnap data set with SNPs shared with the summary GWAS and the target GWAS.
+Then, it presents a message with information on SNPs from the actual set to generate the PRS model not in the **SNPsnap**
+data set. If the proportion of SNPs absent from the **SNPsnap** data set is high, interpretation of the test may be flawed. Finally, it generates a dataframe with the random SNP sets matching the actual SNP set in the above-mentiioned features. Each SNP set corresponds to a column of the dataframe.
+
+In this example, 50 permutations are generated. This is a very low number, just to test the package. `n.perm` values of 1000-10000 seem reasonable to take conclusions in most cases.
+
+```{r}
+random_sets <- Generate_permutationSets(input.perm = PRS_analysis[[2]], sumGWAS = ex_summGWAS, bfile = "tmp", path.to.plink.files = path, n.perm = 50)
+```
+```{r}
+dim(random_sets)
+```
+
+The first lines and columns of the output looks like this:
+
+```{r}
+random_sets[1:9,1:6]
+```
+
+
+
+###3.4. Estimation of significance by permutation <a name="sign"></a>
+
+Once the random sets of matched SNPs were generated, next step if estimation of significance by the `Calculate_permutationSignificance` function. Basically, the function first uses the *--score* option of **PLINK** to estimate PRS based on each random subset and, then, calculates the Nagelkerke's pseudo-R^2^ for each PRS to create a null distribution, including the same covariates in the logistic regression model as in the original analysis. The Nagelkerke's pseudo-R^2^ of the actual SNP set is compared against this distribution to obtain the permuted *P* value, following [Phipson and Smyth (2010)](#ref). The result is showed in the console and saved to a file for inspection. The values of Nagelkerke's pseudo-R^2^ for each permutation are also saved to generate a plot with the distribution (see below).
+
+This function accepts eight arguments, most of them common to other functions of the `competitivePRS` package, such as `path.to.plink.files`, `sumGWAS`, `Cov`, `cov.names`, `bfile` or `outfile`, previously described. Two additional arguments are required. `DR2` is a number with the value of the Naglekerke's pseudo-R^2^ of PRS in the actual data set. This is the first element of the list generated by the `Calculate_DR2Nagelkerke` function of this package. You can also pass this value by writing it. `Perm` is a dataframe with the permuted SNP sets, the object created by the `Generate_permutationTest` function.
+
+Following the example,
+
+```{r}
+result_test <- Calculate_permutationSignificance(path.to.plink.files = path, sumGWAS = ex_summGWAS, 
+Perm = random_sets, Cov = Covariates, cov.names = c("Sex","PCA2"), DR2 = PRS_analysis[[1]], outfile = "my_output_3")
+                                                
+```
+
+The **PLINK** output is shown in the console. The output of the `Calculate_permutationSignificance` function is a list of two elements, the *P* value, and an array with the values of pseudo-R^2^ of Nalgelkerke for each permutation:
+
+```{r}
+str(result_test)
+```
+
+###3.5. Visual inspection of results <a name="lot"></a>
+
+Finally, `competitivePRS` includes a simple function to graphically represent the distribution
+of the increase in Nagelkerke's pseudo-R^2^ for the random SNP sets. A vertical red line with the value for the actual SNP set is also shown. The function, `Generate_Plot` needs two arguments, the values of pseudo-R^2^ of Nalgelkerke for each permutation (that is, the second element of the list generated by the `Calculate_permutationSignificance` function), and the value of the Nagelkerke's pseudo-R^2^ of PRS in the actual data set (the first element of the list generated by the `Calculate_DR2Nagelkerke` function).
+
+```{r}
+Generate_Plot(permDR2 = result_test[[2]], DR2 = PRS_analysis[[1]])
+```
+   
+##4. References <a name="ref"></a>
+
+Chang CC, Chow CC, Tellier LC, Vattikuti S, Purcell SM, Lee JJ.
+Second-generation PLINK: rising to the challenge of larger and richer datasets.
+Gigascience. 2015;4:7. [link](https://gigascience.biomedcentral.com/articles/10.1186/s13742-015-0047-8)
+
+Lee SH, Goddard ME, Wray NR, Visscher PM. A better coefficient of
+determination for genetic profile analysis. Genet Epidemiol. 2012;36(3):214-24. [link](http://onlinelibrary.wiley.com/doi/10.1002/gepi.21614/abstract)
+
+Phipson B, Smyth GK. Permutation P-values should never be zero: calculating
+exact P-values when permutations are randomly drawn. Stat Appl Genet Mol Biol.
+2010;9:Article39. [link](https://www.degruyter.com/view/j/sagmb.2010.9.1/sagmb.2010.9.1.1585/sagmb.2010.9.1.1585.xml)
+
+Pers TH, Timshel P, Hirschhorn JN. SNPsnap: a Web-based tool for
+identification and annotation of matched SNPs. Bioinformatics. 2015;31(3):418-20. [link](https://academic.oup.com/bioinformatics/article/31/3/418/2365926)
+
+Wray NR, Lee SH, Mehta D, Vinkhuyzen AA, Dudbridge F, Middeldorp CM. Research 
+review: Polygenic methods and their application to psychiatric traits. J Child
+Psychol Psychiatry. 2014;55(10):1068-87. [link](http://onlinelibrary.wiley.com/doi/10.1111/jcpp.12295/abstract)
+
+##5. Contact  <a name="email"></a>
+
+javier.costas.costas at sergas.es

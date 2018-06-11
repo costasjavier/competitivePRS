@@ -1,0 +1,29 @@
+The number of SNPs from the list absent from the summary GWAS is: 88 
+
+The number of SNPs in model after clumping and application of P threshold (if any) is: 48 
+
+Logistic Regression Model
+ 
+ lrm(formula = formula.m1)
+ 
+                      Model Likelihood     Discrimination    Rank Discrim.    
+                         Ratio Test           Indexes           Indexes       
+ Obs           100    LR chi2      4.22    R2       0.055    C       0.594    
+  1             50    d.f.            4    g        0.511    Dxy     0.188    
+  2             50    Pr(> chi2) 0.3769    gr       1.666    gamma   0.189    
+ max |deriv| 0.004                         gp       0.104    tau-a   0.095    
+                                           Brier    0.241                     
+ 
+           Coef     S.E.    Wald Z Pr(>|Z|)
+ Intercept   0.1373  0.6566  0.21  0.8344  
+ st.score    0.2381  0.2072  1.15  0.2505  
+ miss      -18.4065 62.8014 -0.29  0.7695  
+ Sex        -0.0356  0.4083 -0.09  0.9306  
+ PCA2       -1.6669  1.3202 -1.26  0.2067  
+ 
+
+The OR for standardized score is 1.269 95%C.I. 0.845 - 1.904 
+
+The increase in Nagelkerke's R2 between a model with covariates and a model with covariates and PRS is: 0.01735782 
+
+A better value for the coefficient of determination, interpetable on the liability scale and adjusted for ascertainment bias is: 0.0111257

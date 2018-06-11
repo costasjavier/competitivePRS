@@ -1,0 +1,25 @@
+PLINK v1.90b2m 64-bit (15 Oct 2014)
+14 arguments: --bfile C:/Users/XCostas/Documents/competitivePRS/data/tmp --clump C:/Users/XCostas/Documents/competitivePRS/data/For.clumping --clump-kb 500 --clump-p1 1 --clump-p2 1 --clump-r2 0.1 --out C:/Users/XCostas/Documents/competitivePRS/data/clumped
+Hostname: XCOSTAS-PC
+Working directory: C:\Users\XCostas\Documents\competitivePRS
+Start time: Mon Jun 11 17:05:17 2018
+
+Random number seed: 1528729517
+8146 MB RAM detected; reserving 4073 MB for main workspace.
+230569 variants loaded from .bim file.
+100 people (47 males, 53 females) loaded from .fam.
+100 phenotype values loaded from .fam.
+Using 1 thread (no multithreaded calculations invoked).
+Before main variant filters, 100 founders and 0 nonfounders present.
+Calculating allele frequencies... done.
+Warning: 37074 het. haploid genotypes present (see
+C:/Users/XCostas/Documents/competitivePRS/data/clumped.hh ).
+Warning: Nonmissing nonmale Y chromosome genotype(s) present.
+Total genotyping rate is 0.990839.
+230569 variants and 100 people pass filters and QC.
+Among remaining phenotypes, 50 are cases and 50 are controls.
+--clump: 48 clumps formed from 171 top variants.
+Results written to
+C:/Users/XCostas/Documents/competitivePRS/data/clumped.clumped .
+
+End time: Mon Jun 11 17:05:17 2018
