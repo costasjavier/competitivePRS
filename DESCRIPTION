@@ -1,6 +1,6 @@
 Package: competitivePRS
 Type: Package
-Title: Significance of Polygenic Risck Score of a SNPs Set Compared to Genomic Background
+Title: Significance of Polygenic Risck Score of a SNP Set Compared to Genomic Background
 Version: 0.1.0
 Author: Javier Costas
 Maintainer: Javier Costas <javier.costas.costas@sergas.es>
