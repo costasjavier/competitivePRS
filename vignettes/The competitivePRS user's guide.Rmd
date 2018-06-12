@@ -60,9 +60,10 @@ to genes. Because of that, it is considered a competitive test.
 it is using the `devtools` package.
 
 ```{r eval = FALSE}
-devtools::install_github("costasjavier/competitivePRS")
+devtools::install_github("costasjavier/competitivePRS",install_vignettes = TRUE)
 ```
 
+Please, note that this process may take several minutes, as a large dataset has to be downloaded.
 The dependencies of `competitivePRS` are `GenomicRanges`, to map SNPs to genes; and `rms`
 to perform logistic regression analysis.
 ```{r message = FALSE, warning = FALSE}
@@ -113,7 +114,7 @@ path<-paste0(path,"/")
 
 The third argument is a string indicating the name of the **PLINK** binary file, without extension. The four argument is an array of two numbers, indicating the length in kb of
 extra bases at the 5' and 3' edges of the exonic region of a gene to be considered as part of a gene, respectively. The final argument is a string indicating the name of the output file to write 
-the list of genes not identified. This file will be written in the `path.to.plink.files` directory.
+the list of genes not identified. This file will be written in the `path.to.plink.files` directory. Please, remember to remove the different files generated during the execution of this example, if you are using the path to the examples directory, `extdata` within the `competitivePRS` package.
 A typical use may be:
 
 ```{r}
