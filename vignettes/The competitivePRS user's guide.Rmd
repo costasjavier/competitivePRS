@@ -65,7 +65,11 @@ devtools::install_github("costasjavier/competitivePRS")
 
 The dependencies of `competitivePRS` are `GenomicRanges`, to map SNPs to genes; and `rms`
 to perform logistic regression analysis.
-
+```{r message = FALSE, warning = FALSE}
+library(GenomicRanges)
+library(rms)
+library(competitivePRS)
+```
 In addition, **PLINK 1.9** ([Chang et al., 2015](#ref)) has to be installed in the PATH. The **PLINK** executables must be downloaded from the **[PLINK](https://www.cog-genomics.org/plink2/)** site.
 
 ##3. Workflow <a name="workflow"></a>
