@@ -147,6 +147,8 @@ Calculate_permutationSignificance <- function(path.to.plink.files, bfile = "tmp"
   sink()
 
   res <- list(Permuted.P = P, DR2.permutations = perm.DeltaR2)
+  
+  message("The permuted P value is:",P)
 
 return(res)
 
