@@ -68,7 +68,7 @@ Map_genestoSNPs <- function(geneset, bfile, path.to.plink.files, extra.kb=c(0,0)
 
 
   # Creating GRanges object with intervals
-  int.gr <- GenomicRanges::as(gene.limits, "GRanges")
+  int.gr <- as(gene.limits, "GRanges")
 
   #preparing input SNPs GRanges
   bfile.path<-paste0(path.to.plink.files,bfile,".bim")
@@ -80,7 +80,7 @@ Map_genestoSNPs <- function(geneset, bfile, path.to.plink.files, extra.kb=c(0,0)
   SNPs.format <- SNPs[, 7:10]
 
   # Creating GRanges object with intervals
-  snps.gr <- GenomicRanges::as(SNPs.format, "GRanges")
+  snps.gr <- as(SNPs.format, "GRanges")
 
   # Overlaps
   ov <- GenomicRanges::findOverlaps(int.gr, snps.gr)
