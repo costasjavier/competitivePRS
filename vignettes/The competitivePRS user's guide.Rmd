@@ -61,6 +61,7 @@ it is using the `devtools` package.
 
 ```{r eval = FALSE}
 devtools::install_github("costasjavier/competitivePRS")
+library(competitivePRS)
 ```
 
 The dependencies of `competitivePRS` are `GenomicRanges`, to map SNPs to genes; and `rms`
