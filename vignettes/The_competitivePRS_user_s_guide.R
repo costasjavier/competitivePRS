@@ -62,3 +62,14 @@ dim(random_sets)
 ## ------------------------------------------------------------------------
 random_sets[1:9,1:6]
 
+## ------------------------------------------------------------------------
+result_test <- Calculate_permutationSignificance(path.to.plink.files = path, sumGWAS = ex_summGWAS, 
+Perm = random_sets, Cov = Covariates, cov.names = c("Sex","PCA2"), DR2 = PRS_analysis[[1]], outfile = "my_output_3")
+                                                
+
+## ------------------------------------------------------------------------
+str(result_test)
+
+## ------------------------------------------------------------------------
+Generate_Plot(permDR2 = result_test[[2]], DR2 = PRS_analysis[[1]])
+
