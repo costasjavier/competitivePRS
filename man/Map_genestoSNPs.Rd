@@ -8,7 +8,7 @@ Map_genestoSNPs(geneset, bfile, path.to.plink.files, extra.kb = c(0, 0),
   output = "missing_genes.txt")
 }
 \arguments{
-\item{geneset}{List of genes from geneset, HGNC symbol or HGNC_ID, no header.}
+\item{geneset}{List of genes from gene set, HGNC symbol or HGNC_ID, no header.}
 
 \item{bfile}{A string indicating the name of the PLINK binary file with data of the GWAS target sample, without file extension.}
 
@@ -24,7 +24,7 @@ is generated in the path defined in \code{path.to.plink.files}.}
 A dataframe of one column with the SNPs mapping your genes, identified by chromosome and position (ex. 4:103188709).
 }
 \description{
-\code{Map_genestoSNPs} takes a specified geneset and returns a list of SNPs from a genotype dataset located within these genes
- including n bases at both edges of the coding region. It also generates a file with a list of genes from the geneset
+\code{Map_genestoSNPs} takes a specified gene set and returns a list of SNPs from a genotype data set located within these genes
+ including n bases at both edges of the coding region. It also generates a file with a list of genes from the gene set
  not found in the hg19 (NCBI37.3) version of the human genome. This is useful to check for the correct name.
 }
