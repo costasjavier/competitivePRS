@@ -60,18 +60,11 @@ to genes. Because of that, it is considered a competitive test.
 it is using the `devtools` package.
 
 ```{r eval = FALSE}
-library(devtools)
-install_github("costasjavier/competitivePRS")
+devtools::install_github("costasjavier/competitivePRS")
 ```
 
 The dependencies of `competitivePRS` are `GenomicRanges`, to map SNPs to genes; and `rms`
 to perform logistic regression analysis.
-
-```{r message = FALSE, warning = FALSE}
-library(GenomicRanges)
-library(rms)
-library(competitivePRS)
-```
 
 In addition, **PLINK 1.9** ([Chang et al., 2015](#ref)) has to be installed in the PATH. The **PLINK** executables must be downloaded from the **[PLINK](https://www.cog-genomics.org/plink2/)** site.
 
@@ -96,23 +89,31 @@ my.gene.list <- c("COMT", "PRODH", "TTC28", "MTMR3", "FFFF")
 my.gene.list
 ```
 
-Alternatively, the list may be read from a file:
-
+Alternatively, the list may be read from a file. In this tutorial, we are going to use the example files 
+included within the package. To retrieve the full path to the example:
 ```{r}
-my.gene.list <- read.table("~/competitivePRS/data/ex_genelist.txt", header = F)
+path <- system.file("extdata","exGenelist.txt",package = "competitivePRS")
+```
+Now, read the example:
+```{r}
+my.gene.list <- read.table(path, header = F)
 head(my.gene.list)
 ```
 
 The second argument is a string with the full `path.to.plink.files`, where the three files of the **PLINK** binary
-format are present. These files store the genotype data of the target sample file, the user's data. The third argument is a string indicating the name of the **PLINK** binary file, without extension. The four argument is an array of two numbers, indicating the length in kb of
+format are present. These files store the genotype data of the target sample file, the user's data. To retrieve the path of the example data:
+```{r}
+path <- system.file("extdata","",package = "competitivePRS")
+path<-paste0(path,"/")
+```
+
+The third argument is a string indicating the name of the **PLINK** binary file, without extension. The four argument is an array of two numbers, indicating the length in kb of
 extra bases at the 5' and 3' edges of the exonic region of a gene to be considered as part of a gene, respectively. The final argument is a string indicating the name of the output file to write 
 the list of genes not identified. This file will be written in the `path.to.plink.files` directory.
 A typical use may be:
 
 ```{r}
-my.bim <- read.table("~/competitivePRS/data/exPLINK.bim")
-head(my.bim)
-my_SNP_list <- Map_genestoSNPs(geneset = my.gene.list, path.to.plink.files = "~/competitivePRS/data/", bfile = "exPLINK", extra.kb = c(35,10), output = "my_output_1")
+my_SNP_list <- Map_genestoSNPs(geneset = my.gene.list, path.to.plink.files = path, bfile = "exPLINK", extra.kb = c(35,10), output = "my_output_1")
 head(my_SNP_list)
 ```
 
@@ -148,17 +149,11 @@ chooses to calculate a better coefficient of determination than Nagelkerke's pse
 described in [Lee et al., 2012](#ref)), its value is also included. In this case, an array indicating disease 
 prevalence and proportion of cases in the target sample have to be passed to the `better.coef` argument.
 
-In this example, first I create the  `path.to.plink.files` argument, needed to read the **PLINK** files. Alternatively, the user may write the path directly.
-
-```{r}
-wd <- getwd()
-path <- paste0(wd,"/data/")
-```
-
 Two data sets are read to a dataframe from file. The first one corresponds to data from summary statistics of the GWAS discovery sample, including a minimum of these columns *"snpid"*, *"a1"*, *"p"*,*"effect"*. If the logical argument `amb.remove` is set to `TRUE`, and additional column, *a2*, is also required.
 
 ```{r}
-ex_summGWAS <- read.table("data/conc_GWAS", header = T)
+path1 <- paste(path,"exSummaryGWAS",sep = "/")
+ex_summGWAS <- read.table(path1, header = T)
 head(ex_summGWAS)
 ```
 
@@ -169,14 +164,15 @@ names. The covariates to include in the model have to be specified, therefore, t
 covariates than the useful ones. The Dependent Variable, "PHENO", is taken from the **PLINK** *"fam"* file. A "IID" column is required for sample identification.
 
 ```{r}
-Covariates <- read.table("data/ex_Covariates", header = T)
+path2 <- paste(path,"exCovariates",sep="/")
+Covariates <-read.table(path2,header = T)
 head(Covariates)
 ```
 
 For example:
 
 ```{r}
-PRS_analysis <- Calculate_DR2Nagelkerke(SNPs.list = my_SNP_list, sumGWAS = ex_summGWAS, Cov = Covariates, path.to.plink.files = path, bfile = "exPLINK", P.threshold = 0.5, amb.remove = T,
+PRS_analysis <- Calculate_DR2Nagelkerke(SNPs.list = my_SNP_list, sumGWAS = ex_summGWAS, Cov = Covariates,      path.to.plink.files = path, bfile = "exPLINK", P.threshold = 0.5, amb.remove = T,
 cov.names = c("Sex","PCA2"), better.coef = c(0.05,0.5), output.file = "my_output_2")
 ```
 
