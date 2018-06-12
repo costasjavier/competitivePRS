@@ -9,7 +9,7 @@ Calculate_DR2Nagelkerke(SNPs.list, sumGWAS, amb.remove = FALSE, Cov = NULL,
   better.coef = NULL, output.file = "output")
 }
 \arguments{
-\item{SNPs.list}{A dataframe with one column,indicating the SNPs belonging to the geneset, in the format chr:position.
+\item{SNPs.list}{A dataframe with one column,indicating the SNPs belonging to the gene set, in the format chr:position.
 This is the return of function \code{Map_genestoSNPs}.}
 
 \item{sumGWAS}{A dataframe with a minimum of four columns with names "snpid", "a1", "p","effect", taken from the summary
@@ -26,7 +26,7 @@ the non-effect allele at each SNP.}
 
 \item{bfile}{A string indicating the name of the PLINK binary file with data of the GWAS target sample, without extension.}
 
-\item{P.threshold}{A number indicating the P thershold of the GWAS discovery sample to include an SNP in the PRS model.}
+\item{P.threshold}{A number indicating the P threshold of the GWAS discovery sample to include an SNP in the PRS model.}
 
 \item{cov.names}{An array with the names of covariates from the \code{Cov} dataframe to be included in the model.}
 
