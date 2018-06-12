@@ -16,8 +16,6 @@
 
 Map_genestoSNPs <- function(geneset, bfile, path.to.plink.files, extra.kb=c(0,0), output = "missing_genes.txt") {
 
-  # Loading mapping positions from hg19
-  data(sysdata2.rda,envir = environment())
 
   # If list of genes not a dataframe
   if (!is.data.frame(geneset)) {
