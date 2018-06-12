@@ -29,9 +29,6 @@
 
 Generate_permutationSets <- function(input.perm, sumGWAS, path.to.plink.files, bfile = "tmp", n.perm) {
 
-  #Loading data on SNP subsets from SNPsnap features.
-  load("~/competitivePRS/R/sysdata1.rda")
-
   # Basic check of input files
   if (!"snpid"  %in% colnames(sumGWAS)) stop("No \"snpid\" column in sumGWAS")
 
