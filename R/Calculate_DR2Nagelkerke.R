@@ -141,15 +141,15 @@ Calculate_DR2Nagelkerke <- function(SNPs.list, sumGWAS, amb.remove = FALSE, Cov 
       # If there is no missing, there is an error in logistic regression. Check
       max.missing <- max(miss)
       if (max.missing > 0) {
-        H0 <- lrm(pheno ~ miss)
-        H1 <- lrm(pheno ~ miss + st.score)
+        H0 <- rms::lrm(pheno ~ miss)
+        H1 <- rms::lrm(pheno ~ miss + st.score)
         OR <- exp(coef(H1)[3])
         CI <- exp(confint.default(H1))
         ci <- as.numeric(CI[3, 1:2])
         # Increase in Nagelkerke's R2
         DR2 <- H1$stats[10] - H0$stats[10]
       } else {
-        H1 <- lrm(pheno ~ st.score)
+        H1 <- rms::lrm(pheno ~ st.score)
         OR <- exp(coef(H1)[1])
         CI <- exp(confint.default(H1))
         ci <- as.numeric(CI[2, 1:2])
@@ -187,8 +187,8 @@ Calculate_DR2Nagelkerke <- function(SNPs.list, sumGWAS, amb.remove = FALSE, Cov 
       #(fmla <- as.formula(paste("y ~ ", paste(xnam, collapse= "+"))))
       formula.m0 <- as.formula(paste("pheno ~ miss", names, sep = " + "))
       formula.m1 <- as.formula(paste("pheno ~ st.score + miss", names, sep =  " + "))
-      H0 <- lrm(formula.m0)
-      H1 <- lrm(formula.m1)
+      H0 <- rms::lrm(formula.m0)
+      H1 <- rms::lrm(formula.m1)
       OR <- exp(coef(H1)[2])
       CI <- exp(confint.default(H1))
       ci <- as.numeric(CI[2, 1:2])
@@ -201,9 +201,9 @@ Calculate_DR2Nagelkerke <- function(SNPs.list, sumGWAS, amb.remove = FALSE, Cov 
         names <- paste(names, cov.names[i], sep=" + ")
       }
       formula.m0 <- as.formula(paste("pheno ~ ", names,sep = "+"))
-      H0 <- lrm(formula.m0)
+      H0 <- rms::lrm(formula.m0)
       formula.m1 <- as.formula(paste("pheno ~ st.score", names, sep = "+"))
-      H1 <- lrm(formula.m1)
+      H1 <- rms::lrm(formula.m1)
       OR <- exp(coef(H1)[2])
       CI <- exp(confint.default(H1))
       ci <- as.numeric(CI[2,1:2])
