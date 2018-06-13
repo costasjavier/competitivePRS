@@ -5,7 +5,7 @@ date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{The competitivePRS user guide}
-  %\VignetteEngine{knitr::knitr}
+  %\VignetteEngine{knitr::rmarkdown}
     \usepackage[utf8]{inputenc} 
 ---
 
@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 )
 knitr::opts_knit$set(root.dir = normalizePath(".."))
 ```
+
 ##Table of Contents
 1. [Introduction](#intro)
 2. [Installing the competitivePRS package](#install)
@@ -59,7 +60,7 @@ to genes. Because of that, it is considered a competitive test.
 it is using the `devtools` package.
 
 ```{r eval = FALSE}
-devtools::install_github("costasjavier/competitivePRS",install_vignettes = TRUE)
+devtools::install_github("costasjavier/competitivePRS")
 ```
 
 Please, note that this process may take several minutes, as a large dataset has to be downloaded.
