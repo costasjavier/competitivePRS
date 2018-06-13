@@ -114,34 +114,34 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h3>3.1. From genes to SNPs <a name="map"></a></h3>
 <p>The <code>Map_genestoSNPs</code> function takes five arguments. The first argument, <code>geneset</code> is a list of genes using the HGNC symbol (such as SLC39A8) or HGNC_ID (such as 20862) for identification, but never a combination of both. This list may be an array or a dataframe with just one column. Please, note that gene symbols are in capital letters. For instance,</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my.gene.list &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;COMT&quot;</span>, <span class="st">&quot;PRODH&quot;</span>, <span class="st">&quot;TTC28&quot;</span>, <span class="st">&quot;MTMR3&quot;</span>, <span class="st">&quot;FFFF&quot;</span>)
-my.gene.list
-<span class="co">#&gt; [1] &quot;COMT&quot;  &quot;PRODH&quot; &quot;TTC28&quot; &quot;MTMR3&quot; &quot;FFFF&quot;</span></code></pre></div>
+my.gene.list</code></pre></div>
+<pre><code>## [1] &quot;COMT&quot;  &quot;PRODH&quot; &quot;TTC28&quot; &quot;MTMR3&quot; &quot;FFFF&quot;</code></pre>
 <p>Alternatively, the list may be read from a file. In this tutorial, we are going to use the example files included within the package. To retrieve the full path to the example:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">path &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>,<span class="st">&quot;exGenelist.txt&quot;</span>,<span class="dt">package =</span> <span class="st">&quot;competitivePRS&quot;</span>)</code></pre></div>
 <p>Now, read the example:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my.gene.list &lt;-<span class="st"> </span><span class="kw">read.table</span>(path, <span class="dt">header =</span> F)
-<span class="kw">head</span>(my.gene.list)
-<span class="co">#&gt;        V1</span>
-<span class="co">#&gt; 1    SYT1</span>
-<span class="co">#&gt; 2    GRM1</span>
-<span class="co">#&gt; 3    GRM5</span>
-<span class="co">#&gt; 4    DLG2</span>
-<span class="co">#&gt; 5 EPB41L1</span>
-<span class="co">#&gt; 6  GRIN2A</span></code></pre></div>
+<span class="kw">head</span>(my.gene.list)</code></pre></div>
+<pre><code>##        V1
+## 1    SYT1
+## 2    GRM1
+## 3    GRM5
+## 4    DLG2
+## 5 EPB41L1
+## 6  GRIN2A</code></pre>
 <p>The second argument is a string with the full <code>path.to.plink.files</code>, where the three files of the <strong>PLINK</strong> binary format are present. These files store the genotype data of the target sample file, the user’s data. To retrieve the path of the example data:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">path &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>,<span class="st">&quot;&quot;</span>,<span class="dt">package =</span> <span class="st">&quot;competitivePRS&quot;</span>)
 path&lt;-<span class="kw">paste0</span>(path,<span class="st">&quot;/&quot;</span>)</code></pre></div>
 <p>The third argument is a string indicating the name of the <strong>PLINK</strong> binary file, without extension. The four argument is an array of two numbers, indicating the length in kb of extra bases at the 5’ and 3’ edges of the exonic region of a gene to be considered as part of a gene, respectively. The final argument is a string indicating the name of the output file to write the list of genes not identified. This file will be written in the <code>path.to.plink.files</code> directory. Please, remember to remove the different files generated during the execution of this example, if you are using the path to the examples directory, <code>extdata</code> within the <code>competitivePRS</code> package. A typical use may be:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my_SNP_list &lt;-<span class="st"> </span><span class="kw">Map_genestoSNPs</span>(<span class="dt">geneset =</span> my.gene.list, <span class="dt">path.to.plink.files =</span> path, <span class="dt">bfile =</span> <span class="st">&quot;exPLINK&quot;</span>, <span class="dt">extra.kb =</span> <span class="kw">c</span>(<span class="dv">35</span>,<span class="dv">10</span>), <span class="dt">output =</span> <span class="st">&quot;my_output_1&quot;</span>)
-<span class="co">#&gt; A total of 2 genes from gene set were not found (written to output file)</span>
-<span class="kw">head</span>(my_SNP_list)
-<span class="co">#&gt;            V1</span>
-<span class="co">#&gt; 1 12:79252123</span>
-<span class="co">#&gt; 2 12:79253404</span>
-<span class="co">#&gt; 3 12:79271359</span>
-<span class="co">#&gt; 4 12:79275054</span>
-<span class="co">#&gt; 5 12:79291372</span>
-<span class="co">#&gt; 6 12:79294033</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my_SNP_list &lt;-<span class="st"> </span><span class="kw">Map_genestoSNPs</span>(<span class="dt">geneset =</span> my.gene.list, <span class="dt">path.to.plink.files =</span> path, <span class="dt">bfile =</span> <span class="st">&quot;exPLINK&quot;</span>, <span class="dt">extra.kb =</span> <span class="kw">c</span>(<span class="dv">35</span>,<span class="dv">10</span>), <span class="dt">output =</span> <span class="st">&quot;my_output_1&quot;</span>)</code></pre></div>
+<pre><code>## A total of 2 genes from gene set were not found (written to output file)</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(my_SNP_list)</code></pre></div>
+<pre><code>##            V1
+## 1 12:79252123
+## 2 12:79253404
+## 3 12:79271359
+## 4 12:79275054
+## 5 12:79291372
+## 6 12:79294033</code></pre>
 <p>In this case, the SNPs located between 35 kb upstream and 10 kb downstream of each gene from the supplied list are assigned to it. The default value is <code>extra.kb=c(0,0)</code>, to limit to SNPs to those between the first and last exonic bases of a gene. This function generates a dataframe of one column with the SNPs in the genotype data mapping on the genes in the supplied list , identified by chromosome and position (ex. 4:103188709). A message in the console indicates the number of genes not found. This problem usually originates by the use of different versions of the genome. <code>competitivePRS</code> uses the NCBI37.3 (hg19) gene location.</p>
 </div>
 <div id="calculation-of-prs-and-statistical-analysis-by-logistic-regression" class="section level3">
@@ -153,68 +153,68 @@ path&lt;-<span class="kw">paste0</span>(path,<span class="st">&quot;/&quot;</spa
 <p>Two data sets are read to a dataframe from file. The first one corresponds to data from summary statistics of the GWAS discovery sample, including a minimum of these columns <em>“snpid”</em>, <em>“a1”</em>, <em>“p”</em>,<em>“effect”</em>. If the logical argument <code>amb.remove</code> is set to <code>TRUE</code>, and additional column, <em>a2</em>, is also required.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">path1 &lt;-<span class="st"> </span><span class="kw">paste</span>(path,<span class="st">&quot;exSummaryGWAS&quot;</span>,<span class="dt">sep =</span> <span class="st">&quot;/&quot;</span>)
 ex_summGWAS &lt;-<span class="st"> </span><span class="kw">read.table</span>(path1, <span class="dt">header =</span> T)
-<span class="kw">head</span>(ex_summGWAS)
-<span class="co">#&gt;         snpid a1 a2      p       effect</span>
-<span class="co">#&gt; 1 1:100005477  A  G 0.9260 -0.001400981</span>
-<span class="co">#&gt; 2 1:100059035  T  C 0.3831 -0.009404080</span>
-<span class="co">#&gt; 3 1:100079760  T  C 0.1886  0.014504302</span>
-<span class="co">#&gt; 4 1:100081117  T  G 0.4249 -0.013004189</span>
-<span class="co">#&gt; 5 1:100086858  A  G 0.4394 -0.009202211</span>
-<span class="co">#&gt; 6 1:100107260  T  C 0.1019 -0.017400515</span></code></pre></div>
+<span class="kw">head</span>(ex_summGWAS)</code></pre></div>
+<pre><code>##         snpid a1 a2      p       effect
+## 1 1:100005477  A  G 0.9260 -0.001400981
+## 2 1:100059035  T  C 0.3831 -0.009404080
+## 3 1:100079760  T  C 0.1886  0.014504302
+## 4 1:100081117  T  G 0.4249 -0.013004189
+## 5 1:100086858  A  G 0.4394 -0.009202211
+## 6 1:100107260  T  C 0.1019 -0.017400515</code></pre>
 <p>The second one is a data set with information of covariates. This is an optional file, in case covariates are included in the logistic regression model. Typical covariates in this type of studies include sex, age, and main PCA (or MDS) dimensions to control for population substructure. The file has to include as many covariates as needed, with a header with covariate names. The covariates to include in the model have to be specified, therefore, this file may contain more covariates than the useful ones. The Dependent Variable, “PHENO”, is taken from the <strong>PLINK</strong> <em>“fam”</em> file. A “IID” column is required for sample identification.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">path2 &lt;-<span class="st"> </span><span class="kw">paste</span>(path,<span class="st">&quot;exCovariates&quot;</span>,<span class="dt">sep=</span><span class="st">&quot;/&quot;</span>)
 Covariates &lt;-<span class="kw">read.table</span>(path2,<span class="dt">header =</span> T)
-<span class="kw">head</span>(Covariates)
-<span class="co">#&gt;      IID Sex        PCA1        PCA2</span>
-<span class="co">#&gt; 1 11_002   2 -0.20555026  0.15640545</span>
-<span class="co">#&gt; 2 11_029   2  0.28650108 -0.10795737</span>
-<span class="co">#&gt; 3 11_003   2 -0.17907436  0.22686469</span>
-<span class="co">#&gt; 4 11_022   1 -0.01054431 -0.13947130</span>
-<span class="co">#&gt; 5 11_007   2  0.03156429 -0.09405964</span>
-<span class="co">#&gt; 6 11_035   2  0.29811221  0.09599895</span></code></pre></div>
+<span class="kw">head</span>(Covariates)</code></pre></div>
+<pre><code>##      IID Sex        PCA1        PCA2
+## 1 11_002   2 -0.20555026  0.15640545
+## 2 11_029   2  0.28650108 -0.10795737
+## 3 11_003   2 -0.17907436  0.22686469
+## 4 11_022   1 -0.01054431 -0.13947130
+## 5 11_007   2  0.03156429 -0.09405964
+## 6 11_035   2  0.29811221  0.09599895</code></pre>
 <p>For example:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">PRS_analysis &lt;-<span class="st"> </span><span class="kw">Calculate_DR2Nagelkerke</span>(<span class="dt">SNPs.list =</span> my_SNP_list, <span class="dt">sumGWAS =</span> ex_summGWAS, <span class="dt">Cov =</span> Covariates,      <span class="dt">path.to.plink.files =</span> path, <span class="dt">bfile =</span> <span class="st">&quot;exPLINK&quot;</span>, <span class="dt">P.threshold =</span> <span class="fl">0.5</span>, <span class="dt">amb.remove =</span> T,
-<span class="dt">cov.names =</span> <span class="kw">c</span>(<span class="st">&quot;Sex&quot;</span>,<span class="st">&quot;PCA2&quot;</span>), <span class="dt">better.coef =</span> <span class="kw">c</span>(<span class="fl">0.05</span>,<span class="fl">0.5</span>), <span class="dt">output.file =</span> <span class="st">&quot;my_output_2&quot;</span>)
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Results written to file C:/Users/XCostas/Documents/R/win-library/3.2/competitivePRS/extdata/my_output_2</span></code></pre></div>
+<span class="dt">cov.names =</span> <span class="kw">c</span>(<span class="st">&quot;Sex&quot;</span>,<span class="st">&quot;PCA2&quot;</span>), <span class="dt">better.coef =</span> <span class="kw">c</span>(<span class="fl">0.05</span>,<span class="fl">0.5</span>), <span class="dt">output.file =</span> <span class="st">&quot;my_output_2&quot;</span>)</code></pre></div>
+<pre><code>## 
+## Results written to file C:/Users/XCostas/Documents/R/win-library/3.2/competitivePRS/extdata/my_output_2</code></pre>
 <p>The function returns a list of four elements, the increase in Nagelkerke’s pseudo-R<sup>2</sup> after adding the standardized PRS to a model including only covariates, an array with the SNPs present in the PRS model (needed as input of the <code>Generate_permutationSets</code> function), the summary of the fitted logistic regression model, for inspection by the user, and a better coefficient of determination (or “n.a.” if no requested).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">PRS_analysis<span class="op">$</span><span class="st">`</span><span class="dt">Pseudo-R2</span><span class="st">`</span>
-<span class="co">#&gt;         R2 </span>
-<span class="co">#&gt; 0.01735782</span></code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">PRS_analysis<span class="op">$</span>Input_perm
-<span class="co">#&gt;  [1] &quot;11:83204132&quot; &quot;11:83373309&quot; &quot;11:83479808&quot; &quot;11:83562296&quot; &quot;11:83581941&quot;</span>
-<span class="co">#&gt;  [6] &quot;11:83620215&quot; &quot;11:83634983&quot; &quot;11:83655564&quot; &quot;11:83728714&quot; &quot;11:83918339&quot;</span>
-<span class="co">#&gt; [11] &quot;11:84022936&quot; &quot;11:84192441&quot; &quot;11:84321748&quot; &quot;11:84379740&quot; &quot;11:84383445&quot;</span>
-<span class="co">#&gt; [16] &quot;11:84449873&quot; &quot;11:84572377&quot; &quot;11:84574040&quot; &quot;11:84642163&quot; &quot;11:85280558&quot;</span>
-<span class="co">#&gt; [21] &quot;11:88252273&quot; &quot;12:13723127&quot; &quot;12:13852050&quot; &quot;12:13870080&quot; &quot;12:13896895&quot;</span>
-<span class="co">#&gt; [26] &quot;12:13950577&quot; &quot;12:13968186&quot; &quot;12:14015706&quot; &quot;12:14065831&quot; &quot;12:79252123&quot;</span>
-<span class="co">#&gt; [31] &quot;12:79484134&quot; &quot;12:79592680&quot; &quot;12:79738884&quot; &quot;12:79785690&quot; &quot;16:10208218&quot;</span>
-<span class="co">#&gt; [36] &quot;16:10216343&quot; &quot;16:10225050&quot; &quot;16:10304290&quot; &quot;16:9850397&quot;  &quot;16:9873465&quot; </span>
-<span class="co">#&gt; [41] &quot;16:9940293&quot;  &quot;6:146677281&quot; &quot;6:146680907&quot; &quot;6:146725969&quot; &quot;6:146726569&quot;</span>
-<span class="co">#&gt; [46] &quot;6:146766138&quot; &quot;11:84786132&quot; &quot;11:88669352&quot;</span></code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">PRS_analysis<span class="op">$</span>Logistic_model
-<span class="co">#&gt; Logistic Regression Model</span>
-<span class="co">#&gt;  </span>
-<span class="co">#&gt;  rms::lrm(formula = formula.m1)</span>
-<span class="co">#&gt;  </span>
-<span class="co">#&gt;                       Model Likelihood     Discrimination    Rank Discrim.    </span>
-<span class="co">#&gt;                          Ratio Test           Indexes           Indexes       </span>
-<span class="co">#&gt;  Obs           100    LR chi2      4.22    R2       0.055    C       0.594    </span>
-<span class="co">#&gt;   1             50    d.f.            4    g        0.511    Dxy     0.188    </span>
-<span class="co">#&gt;   2             50    Pr(&gt; chi2) 0.3769    gr       1.666    gamma   0.189    </span>
-<span class="co">#&gt;  max |deriv| 0.004                         gp       0.104    tau-a   0.095    </span>
-<span class="co">#&gt;                                            Brier    0.241                     </span>
-<span class="co">#&gt;  </span>
-<span class="co">#&gt;            Coef     S.E.    Wald Z Pr(&gt;|Z|)</span>
-<span class="co">#&gt;  Intercept   0.1373  0.6566  0.21  0.8344  </span>
-<span class="co">#&gt;  st.score    0.2381  0.2072  1.15  0.2505  </span>
-<span class="co">#&gt;  miss      -18.4065 62.8014 -0.29  0.7695  </span>
-<span class="co">#&gt;  Sex        -0.0356  0.4083 -0.09  0.9306  </span>
-<span class="co">#&gt;  PCA2       -1.6669  1.3202 -1.26  0.2067  </span>
-<span class="co">#&gt; </span></code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">PRS_analysis<span class="op">$</span>Better_coef
-<span class="co">#&gt;        R2 </span>
-<span class="co">#&gt; 0.0111257</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">PRS_analysis<span class="op">$</span><span class="st">`</span><span class="dt">Pseudo-R2</span><span class="st">`</span></code></pre></div>
+<pre><code>##         R2 
+## 0.01735782</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">PRS_analysis<span class="op">$</span>Input_perm</code></pre></div>
+<pre><code>##  [1] &quot;11:83204132&quot; &quot;11:83373309&quot; &quot;11:83479808&quot; &quot;11:83562296&quot; &quot;11:83581941&quot;
+##  [6] &quot;11:83620215&quot; &quot;11:83634983&quot; &quot;11:83655564&quot; &quot;11:83728714&quot; &quot;11:83918339&quot;
+## [11] &quot;11:84022936&quot; &quot;11:84192441&quot; &quot;11:84321748&quot; &quot;11:84379740&quot; &quot;11:84383445&quot;
+## [16] &quot;11:84449873&quot; &quot;11:84572377&quot; &quot;11:84574040&quot; &quot;11:84642163&quot; &quot;11:85280558&quot;
+## [21] &quot;11:88252273&quot; &quot;12:13723127&quot; &quot;12:13852050&quot; &quot;12:13870080&quot; &quot;12:13896895&quot;
+## [26] &quot;12:13950577&quot; &quot;12:13968186&quot; &quot;12:14015706&quot; &quot;12:14065831&quot; &quot;12:79252123&quot;
+## [31] &quot;12:79484134&quot; &quot;12:79592680&quot; &quot;12:79738884&quot; &quot;12:79785690&quot; &quot;16:10208218&quot;
+## [36] &quot;16:10216343&quot; &quot;16:10225050&quot; &quot;16:10304290&quot; &quot;16:9850397&quot;  &quot;16:9873465&quot; 
+## [41] &quot;16:9940293&quot;  &quot;6:146677281&quot; &quot;6:146680907&quot; &quot;6:146725969&quot; &quot;6:146726569&quot;
+## [46] &quot;6:146766138&quot; &quot;11:84786132&quot; &quot;11:88669352&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">PRS_analysis<span class="op">$</span>Logistic_model</code></pre></div>
+<pre><code>## Logistic Regression Model
+##  
+##  rms::lrm(formula = formula.m1)
+##  
+##                       Model Likelihood     Discrimination    Rank Discrim.    
+##                          Ratio Test           Indexes           Indexes       
+##  Obs           100    LR chi2      4.22    R2       0.055    C       0.594    
+##   1             50    d.f.            4    g        0.511    Dxy     0.188    
+##   2             50    Pr(&gt; chi2) 0.3769    gr       1.666    gamma   0.189    
+##  max |deriv| 0.004                         gp       0.104    tau-a   0.095    
+##                                            Brier    0.241                     
+##  
+##            Coef     S.E.    Wald Z Pr(&gt;|Z|)
+##  Intercept   0.1373  0.6566  0.21  0.8344  
+##  st.score    0.2381  0.2072  1.15  0.2505  
+##  miss      -18.4065 62.8014 -0.29  0.7695  
+##  Sex        -0.0356  0.4083 -0.09  0.9306  
+##  PCA2       -1.6669  1.3202 -1.26  0.2067  
+## </code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">PRS_analysis<span class="op">$</span>Better_coef</code></pre></div>
+<pre><code>##        R2 
+## 0.0111257</code></pre>
 <p>The Independent Variables in the model are <em>“st.score”</em>, corresponding to the standardized PRS; <em>“miss”</em>, corresponding to the <em>“missing genotypes”</em> covariate; and the remaining optional covariates.</p>
 <p>In addition, these and additional data are stored in the output file to facilitate latter inspection of results.</p>
 <p>It is important to note that the GWAS discovery sample and the GWAS target sample have to be concordant in terms of DNA strand to call alleles. Lack of concordance is easy to identify in some cases, as the existence of more than two alleles. This is shown in the <strong>PLINK</strong> output as a warning message with the number of skipped SNPs as a consequence of allele mismatches. But in some instances (A/T or C/G SNPs), the mismatch is undetectable. <code>competitivePRS</code> does not deal with this problem. It is responsibility of the user to check the two GWAS samples for strand concordance, flipping strand or removing ambiguous SNPs before the analysis.</p>
@@ -226,20 +226,20 @@ Covariates &lt;-<span class="kw">read.table</span>(path2,<span class="dt">header
 <p>The function first creates a subset of the SNPsnap data set with SNPs shared with the summary GWAS and the target GWAS. Then, it presents a message with information on SNPs from the actual set to generate the PRS model not in the <strong>SNPsnap</strong> data set. If the proportion of SNPs absent from the <strong>SNPsnap</strong> data set is high, interpretation of the test may be flawed. Finally, it generates a dataframe with the random SNP sets matching the actual SNP set in the above-mentiioned features. Each SNP set corresponds to a column of the dataframe.</p>
 <p>In this example, 50 permutations are generated. This is a very low number, just to test the package. <code>n.perm</code> values of 1000-10000 seem reasonable to take conclusions in most cases.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">random_sets &lt;-<span class="st"> </span><span class="kw">Generate_permutationSets</span>(<span class="dt">input.perm =</span> PRS_analysis[[<span class="dv">2</span>]], <span class="dt">sumGWAS =</span> ex_summGWAS, <span class="dt">bfile =</span> <span class="st">&quot;tmp&quot;</span>, <span class="dt">path.to.plink.files =</span> path, <span class="dt">n.perm =</span> <span class="dv">50</span>)</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(random_sets)
-<span class="co">#&gt; [1] 48 50</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(random_sets)</code></pre></div>
+<pre><code>## [1] 48 50</code></pre>
 <p>The first lines and columns of the output looks like this:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">random_sets[<span class="dv">1</span><span class="op">:</span><span class="dv">9</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>]
-<span class="co">#&gt;            X1          X2          X3          X4          X5          X6</span>
-<span class="co">#&gt; 1 7:103637906 12:79252123 19:34105378 15:94780241 4:183849072 2:204740866</span>
-<span class="co">#&gt; 2  6:90707282 10:80042347 18:59291851  7:11503363 3:177243737 12:13852050</span>
-<span class="co">#&gt; 3  3:97327567  2:35451767 7:154622647 7:147099227  4:29303608 11:83817360</span>
-<span class="co">#&gt; 4 4:137761486  16:7590617  3:54867313  16:7590617 3:115994501 11:84572377</span>
-<span class="co">#&gt; 5 17:33026691 6:168980519 22:34203195   4:1539392  9:74327419 8:133989150</span>
-<span class="co">#&gt; 6 7:147679621 16:63754345 22:33624845 21:18040023 10:84735241 11:84460855</span>
-<span class="co">#&gt; 7 11:84642163 11:84642163 11:84642163 11:84642163 11:84642163 11:84642163</span>
-<span class="co">#&gt; 8 2:215050520 7:147001975 4:162383466  3:59920697  8:51558988 13:62941049</span>
-<span class="co">#&gt; 9 11:83256868 3:163096848  1:49454215 11:83283859 3:162856377 1:188172047</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">random_sets[<span class="dv">1</span><span class="op">:</span><span class="dv">9</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>]</code></pre></div>
+<pre><code>##            X1          X2           X3          X4          X5          X6
+## 1 3:139648874  1:96393689  22:32864879 13:46426764 4:183849072 12:14128322
+## 2 2:165183257 18:59291851 12:130906479  4:78336408  8:74335491  8:74335491
+## 3  3:94943493 11:23804832  11:23804832 4:161441599 11:83918339 11:28826913
+## 4  4:21116890  16:7493024   3:60498172   9:9539114  3:54867313 6:124890305
+## 5 9:109813447 13:27488025  10:64278634 7:132192949 13:67933131 22:44545365
+## 6 14:47386441  2:57218736   2:57218736 14:47386441  2:57218736 4:130724902
+## 7 11:84642163 11:84642163  11:84642163 11:84642163 11:84642163 11:84642163
+## 8   9:9216473  5:58646112 11:132543770  2:80169400  4:62859511  10:9017944
+## 9 11:83204132  5:84562600   3:17357820 3:162925738  1:49454215 11:83283859</code></pre>
 </div>
 <div id="estimation-of-significance-by-permutation" class="section level3">
 <h3>3.4. Estimation of significance by permutation <a name="sign"></a></h3>
@@ -247,19 +247,19 @@ Covariates &lt;-<span class="kw">read.table</span>(path2,<span class="dt">header
 <p>This function accepts eight arguments, most of them common to other functions of the <code>competitivePRS</code> package, such as <code>path.to.plink.files</code>, <code>sumGWAS</code>, <code>Cov</code>, <code>cov.names</code>, <code>bfile</code> or <code>outfile</code>, previously described. Two additional arguments are required. <code>DR2</code> is a number with the value of the Naglekerke’s pseudo-R<sup>2</sup> of PRS in the actual data set. This is the first element of the list generated by the <code>Calculate_DR2Nagelkerke</code> function of this package. You can also pass this value by writing it. <code>Perm</code> is a dataframe with the permuted SNP sets, the object created by the <code>Generate_permutationTest</code> function.</p>
 <p>Following the example,</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">result_test &lt;-<span class="st"> </span><span class="kw">Calculate_permutationSignificance</span>(<span class="dt">path.to.plink.files =</span> path, <span class="dt">sumGWAS =</span> ex_summGWAS, 
-<span class="dt">Perm =</span> random_sets, <span class="dt">Cov =</span> Covariates, <span class="dt">cov.names =</span> <span class="kw">c</span>(<span class="st">&quot;Sex&quot;</span>,<span class="st">&quot;PCA2&quot;</span>), <span class="dt">DR2 =</span> PRS_analysis[[<span class="dv">1</span>]], <span class="dt">outfile =</span> <span class="st">&quot;my_output_3&quot;</span>)
-<span class="co">#&gt; The permuted P value is: 0.274509803921569</span></code></pre></div>
+<span class="dt">Perm =</span> random_sets, <span class="dt">Cov =</span> Covariates, <span class="dt">cov.names =</span> <span class="kw">c</span>(<span class="st">&quot;Sex&quot;</span>,<span class="st">&quot;PCA2&quot;</span>), <span class="dt">DR2 =</span> PRS_analysis[[<span class="dv">1</span>]], <span class="dt">outfile =</span> <span class="st">&quot;my_output_3&quot;</span>)</code></pre></div>
+<pre><code>## The permuted P value is: 0.215686274509804</code></pre>
 <p>The <strong>PLINK</strong> output is shown in the console. The output of the <code>Calculate_permutationSignificance</code> function is a list of two elements, the <em>P</em> value, and an array with the values of pseudo-R<sup>2</sup> of Nalgelkerke for each permutation:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(result_test)
-<span class="co">#&gt; List of 2</span>
-<span class="co">#&gt;  $ Permuted.P      : num 0.275</span>
-<span class="co">#&gt;  $ DR2.permutations: num [1:50] 1.56e-02 3.39e-02 9.72e-07 4.71e-03 1.31e-05 ...</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(result_test)</code></pre></div>
+<pre><code>## List of 2
+##  $ Permuted.P      : num 0.216
+##  $ DR2.permutations: num [1:50] 0.002308 0.006951 0.000202 0.000549 0.040321 ...</code></pre>
 </div>
 <div id="visual-inspection-of-results" class="section level3">
-<h3>3.5. Visual inspection of results <a name="lot"></a></h3>
+<h3>3.5. Visual inspection of results <a name="plot"></a></h3>
 <p>Finally, <code>competitivePRS</code> includes a simple function to graphically represent the distribution of the increase in Nagelkerke’s pseudo-R<sup>2</sup> for the random SNP sets. A vertical red line with the value for the actual SNP set is also shown. The function, <code>Generate_Plot</code> needs two arguments, the values of pseudo-R<sup>2</sup> of Nalgelkerke for each permutation (that is, the second element of the list generated by the <code>Calculate_permutationSignificance</code> function), and the value of the Nagelkerke’s pseudo-R<sup>2</sup> of PRS in the actual data set (the first element of the list generated by the <code>Calculate_DR2Nagelkerke</code> function).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">Generate_Plot</span>(<span class="dt">permDR2 =</span> result_test[[<span class="dv">2</span>]], <span class="dt">DR2 =</span> PRS_analysis[[<span class="dv">1</span>]])</code></pre></div>
-<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
 </div>
 </div>
 <div id="references" class="section level2">
