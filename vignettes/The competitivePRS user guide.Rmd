@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 )
 knitr::opts_knit$set(root.dir = normalizePath(".."))
 ```
-
+<!-- rmarkdown v1 -->
 ##Table of Contents
 1. [Introduction](#intro)
 2. [Installing the competitivePRS package](#install)
