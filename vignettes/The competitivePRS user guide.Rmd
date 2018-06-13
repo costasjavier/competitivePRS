@@ -6,9 +6,6 @@ output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{The competitivePRS user guide}
   %\VignetteEngine{knitr::knitr}
-  %\SweaveUTF8
-  %\VignetteEncoding{UTF-8}
-  \usepackage[utf8]{inputenc}
 ---
 
 ```{r setup, include = FALSE}
