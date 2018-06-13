@@ -40,7 +40,7 @@ expected that a large proportion of SNP sets with enough size will be associated
 
 The `competitivePRS` R package is a tool for the estimation of PRS
 of a SNP set, and calculation of its significance in a target case-control study based on
-comparison of the Nagelkerke's pseudo-R^2 of the actual SNP set to random permutations
+comparison of the Nagelkerke's pseudo-R^2^ of the actual SNP set to random permutations
 of SNP sets matching the actual SNP set by a series of properties such as linkage disequilibrium (LD) pattern, minor allele frequency (MAF), distance to transcription start sites, and gene density. The scientific question to answer
 is not if the PRS based on the SNP set is associated with disease status but if it is more
 associated than a random SNP set with similar properties of LD, MAF and position in relation
