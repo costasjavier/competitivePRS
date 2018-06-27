@@ -105,8 +105,7 @@ Calculate_permutationSignificance <- function(path.to.plink.files, bfile = "tmp"
       formula.m1 <- as.formula(paste("pheno ~ st.score + miss", names, sep="+"))
 
       # If there is no missing, there was an error in logistic regression. Check
-      N.snps <- summary(Scores.ord$CNT)
-      Scores.ord$percent_missing <- (N.snps[6] - Scores.ord$CNT) / N.snps[6]
+      Scores.ord$percent_missing <- (max(Scores.ord$CNT) - Scores.ord$CNT) / max(Scores.ord$CNT)
       miss <- Scores.ord$percent_missing
       max.missing <- max(miss)
       if (max.missing > 0) {
