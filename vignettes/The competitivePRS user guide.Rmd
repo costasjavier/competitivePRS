@@ -17,7 +17,7 @@ vignette: >
   3.2 [Calculation of PRS and statistical analysis by logistic regression](#DR2)    
   3.3 [Generation of random SNP sets matching the actual SNP set by some genomic properties](#perm)   
   3.4 [Estimation of significance by permutation](#sign)    
-  3.5 [Visual inspection of result](#plot)    
+  3.5 [Visual inspection of results](#plot)    
 4. [References](#ref)
 5. [Contact](#email)
 
