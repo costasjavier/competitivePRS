@@ -63,8 +63,7 @@ Calculate_permutationSignificance <- function(path.to.plink.files, bfile = "tmp"
     if (missing(Cov)) {
       data <- Scores
       # Calculating % missing
-      N.snps <- summary(data$CNT)
-      data$percent_missing <- (N.snps[6] - data$CNT) / N.snps[6]
+      data$percent_missing <- (max(data$CNT) - data$CNT) / max(data$CNT)
       # Covariables
       pheno <- data$PHENO
       score <- data$SCORE
@@ -74,12 +73,12 @@ Calculate_permutationSignificance <- function(path.to.plink.files, bfile = "tmp"
       # If there is no missing, there was an error in logistic regression. Check
       max.missing<-max(miss)
       if (max.missing > 0) {
-        H0 <- rms::lrm(pheno ~ miss)
-        H1 <- rms::lrm(pheno ~ miss + st.score)
+        H0 <- rms::lrm(pheno ~ miss, tol = 0)
+        H1 <- rms::lrm(pheno ~ miss + st.score, tol = 0)
         # Increase in Nagelkerke's pseudo-R2
         permDR2 <- (H1$stats[10] - H0$stats[10])
       } else {
-        H1 <- rms::lrm(pheno ~ st.score)
+        H1 <- rms::lrm(pheno ~ st.score, tol = 0)
         permDR2 <- (H1$stats[10])
       }
     } else if (!missing(Cov)){
@@ -109,16 +108,16 @@ Calculate_permutationSignificance <- function(path.to.plink.files, bfile = "tmp"
       miss <- Scores.ord$percent_missing
       max.missing <- max(miss)
       if (max.missing > 0) {
-        H0 <- rms::lrm(formula.m0)
-        H1 <- rms::lrm(formula.m1)
+        H0 <- rms::lrm(formula.m0, tol = 0)
+        H1 <- rms::lrm(formula.m1, tol = 0)
         # Increase in Nagelkerke's R2
         permDR2 <- (H1$stats[10] - H0$stats[10])
       } else {
         names <- cov.names[1]
         formula.m0 <- as.formula(paste("pheno ~ ",names, sep="+"))
-        H0 <- rms::lrm(formula.m0)
+        H0 <- rms::lrm(formula.m0, tol = 0)
         formula.m1 <- as.formula(paste("pheno  ~ st.score", names, sep="+"))
-        H1 <- rms::lrm(formula.m1)
+        H1 <- rms::lrm(formula.m1, tol = 0)
         # Increase in Nagelkerke's R2
         permDR2 <- (H1$stats[10] - H0$stats[10])
       }
