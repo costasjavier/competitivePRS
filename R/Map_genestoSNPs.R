@@ -84,14 +84,7 @@ Map_genestoSNPs <- function(geneset, bfile, path.to.plink.files, extra.kb=c(0,0)
 
   # Overlaps
   ov <- GenomicRanges::findOverlaps(int.gr, snps.gr)
-
-  # Depending on the version of GenomicRanges, the same column may be called as "to" or "subjectsHits", check
-  if ("to" %in% colnames(ov)) {
-    snps.hit <- unique(as.array(ov@to))
-  } else {
-    snps.hit <- unique(as.array(ov@subjectHits))
-  }
-
+  snps.hit <- as.matrix(ov)[, 2]
   list <- SNPs.format[snps.hit, ]
 
   # Transforming to input for Calculate_DR2Nagelkerke function
