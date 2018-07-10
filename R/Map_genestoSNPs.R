@@ -53,6 +53,7 @@ Map_genestoSNPs <- function(geneset, bfile, path.to.plink.files, extra.kb=c(0,0)
   if(sum(extra.kb) == 0) {
     gene.limits <- pos.genes[, c(2:4)]
     colnames(gene.limits) <- c("chrom", "start", "end")
+    gene.limits$chrom <- paste0("chr", gene.limits$chrom)
   } else if (sum(extra.kb) != 0) {
    forward <- subset(pos.genes, pos.genes$V5 == "+")
    forward$V3 <- forward$V3 - extra.kb[1] * 1000
