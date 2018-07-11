@@ -40,10 +40,12 @@ Calculate_DR2Nagelkerke <- function(SNPs.list, sumGWAS, amb.remove = FALSE, Cov 
   if (!"a1"  %in% colnames(sumGWAS)) stop("No \"a1\" column in sumGWAS")
   if (!"p"  %in% colnames(sumGWAS)) stop("No \"p\" column in sumGWAS")
   if (!"effect"  %in% colnames(sumGWAS)) stop("No \"effect\" column in sumGWAS")
-  #if (!(missing(Cov) & !("IID" %in% colnames(Cov)))) stop("No \"IID\" column in Cov") #OLLO, REPASAR OS IF, E INCLUIR IF DE a2
-  #if (length(subset(cov.names,cov.names %in% colnames(Cov))) != length(cov.names)){
-  # stop("Some covariate names in cov.names are not in the Cov dataframe")
-  #}
+  # Basic check of covariates file
+  if (!is.null(Cov)){
+    if !("IID" %in% colnames(Cov) stop("No \"IID\" column in Cov")
+    if (length(subset(cov.names,cov.names %in% colnames(Cov))) != length(cov.names)) stop("Some covariate names in cov.names are not in the Cov dataframe")
+  }
+   
 
   #--------------------------------
   # Calculation of individual PRS
@@ -124,7 +126,7 @@ Calculate_DR2Nagelkerke <- function(SNPs.list, sumGWAS, amb.remove = FALSE, Cov 
   # --------------------------------------------
 
    # Merge covariables with score, if any
-  if (missing(Cov)) {
+  if (is.null(Cov)) {
       data <- Scores
 
       # Calculating % missing
@@ -136,7 +138,7 @@ Calculate_DR2Nagelkerke <- function(SNPs.list, sumGWAS, amb.remove = FALSE, Cov 
       score <- data$SCORE
       miss <- data$percent_missing
       # Standardized score
-      st.score <- (score - mean(score)) / sd(score)
+      st.score <- scale(score)
 
       # If there is no missing, there is an error in logistic regression. Check
       max.missing <- max(miss)
@@ -157,7 +159,7 @@ Calculate_DR2Nagelkerke <- function(SNPs.list, sumGWAS, amb.remove = FALSE, Cov 
         # Increase in Nagelkerke's R2
         DR2 <- (H1$stats[10])
       }
-  } else if (!missing(Cov)) {
+  } else if (!is.null(Cov)) {
 
     # Choosing covariates
     cov.for.used <- colnames(Cov) %in% cov.names
@@ -173,7 +175,7 @@ Calculate_DR2Nagelkerke <- function(SNPs.list, sumGWAS, amb.remove = FALSE, Cov 
     score <- Scores.ord$SCORE
 
     # Standardized score
-    st.score <- (score - mean(score)) / sd(score)
+    st.score <- scale(score)
     names <- cov.names[1]
     for (i in 2:length(cov.names)) {
       names <- paste(names, cov.names[i], sep=" + ")
@@ -235,7 +237,7 @@ Calculate_DR2Nagelkerke <- function(SNPs.list, sumGWAS, amb.remove = FALSE, Cov 
   sink(file.name)
   cat("The number of SNPs from the list absent from the summary GWAS is:", n, "\n\n")
   cat("The number of SNPs in model after clumping and application of P threshold (if any) is:", dim(PRS.model)[1], "\n\n")
-  print(H1)
+  print(H1) 
   cat("\nThe OR for standardized score is",round(OR,3), "95%C.I.", round(ci[1],3), "-", round(ci[2],3), "\n\n")
   cat("The increase in Nagelkerke's R2 between a model with covariates and a model with covariates and PRS is:",  DR2,"\n\n")
   cat("A better value for the coefficient of determination, interpetable on the liability scale and adjusted for ascertainment bias is:",  h2l)
