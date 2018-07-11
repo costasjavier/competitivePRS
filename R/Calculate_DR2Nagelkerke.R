@@ -40,13 +40,7 @@ Calculate_DR2Nagelkerke <- function(SNPs.list, sumGWAS, amb.remove = FALSE, Cov 
   if (!"a1"  %in% colnames(sumGWAS)) stop("No \"a1\" column in sumGWAS")
   if (!"p"  %in% colnames(sumGWAS)) stop("No \"p\" column in sumGWAS")
   if (!"effect"  %in% colnames(sumGWAS)) stop("No \"effect\" column in sumGWAS")
-  # Basic check of covariates file
-  if (!is.null(Cov)){
-    if !("IID" %in% colnames(Cov) stop("No \"IID\" column in Cov")
-    if (length(subset(cov.names,cov.names %in% colnames(Cov))) != length(cov.names)) stop("Some covariate names in cov.names are not in the Cov dataframe")
-  }
-   
-
+  
   #--------------------------------
   # Calculation of individual PRS
   #--------------------------------
