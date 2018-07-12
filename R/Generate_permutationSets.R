@@ -35,6 +35,8 @@ Generate_permutationSets <- function(input.perm, sumGWAS, path.to.plink.files, b
   # First, create a subset of the SNPsnap data set with SNPs shared with the summary GWAS and the target GWAS
   bfile.bim <- paste0(path.to.plink.files,bfile,".bim")
   b.file <- read.table(bfile.bim, header = F)
+  # Replace SNP_ID by chr:position
+  b.file$V2 <- paste(b.file$V1,b.file$V4,sep=":")
   SNPsnap.subsets.co <- subset(SNPsnap.subsets, SNPsnap.subsets$snpid %in% sumGWAS$snpid)
   SNPsnap.subsets.common <- subset(SNPsnap.subsets.co, SNPsnap.subsets.co$snpid %in% b.file$V2)
 
