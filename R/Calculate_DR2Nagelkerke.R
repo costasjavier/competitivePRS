@@ -78,8 +78,7 @@ Calculate_DR2Nagelkerke <- function(SNPs.list, sumGWAS, amb.remove = FALSE, Cov 
   tmp.bimfile <- paste(paste0(path.to.plink.files, "tmp"), "bim", sep=".")
   bim.tmp <- read.table(tmp.bimfile, header = F)
   bim.tmp$V2 <- paste(bim.tmp$V1, bim.tmp$V4, sep=":")
-  write.table(x = bim.tmp, file = tmp.bimfile, append = F, quote = F, sep = "\t", row.names = F, col.names = F)#OLLO, chequear XY chrom
-
+  write.table(x = bim.tmp, file = tmp.bimfile, append = F, quote = F, sep = "\t", row.names = F, col.names = F)
   #Performing LD-clumping using PLINK
   subset.for.clumping <- subset(sumGWAS, sumGWAS$snpid %in% SNPs.list[, 1])
   if (dim(subset.for.clumping)[1] == 0) {
