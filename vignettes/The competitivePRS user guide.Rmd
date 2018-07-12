@@ -77,7 +77,7 @@ This tutorial explains the different steps implemented in `competitivePRS` to ob
 ###3.1. From genes to SNPs <a name="map"></a>
 
 The `Map_genestoSNPs` function takes five arguments. The first argument, `geneset` is a list of genes using
-the HGNC symbol (such as SLC39A8) or HGNC_ID (such as 20862) for identification, but never
+the HGNC symbol (such as SLC39A8) or NCBI gene ID (such as 64116) for identification, but never
 a combination of both. This list may be an array or a dataframe with just one column. Please, 
 note that gene symbols are in capital letters. For instance,
 
