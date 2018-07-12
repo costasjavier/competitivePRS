@@ -200,12 +200,6 @@ Calculate_DR2Nagelkerke <- function(SNPs.list, sumGWAS, amb.remove = FALSE, Cov 
       # Increase in Nagelkerke's R2
       DR2 <- H1$stats[10] - H0$stats[10]
     } else {
-      names <- cov.names[1]
-      if (length(cov.names) > 1){
-        for (i in 2:length(cov.names)) {
-          names <- paste(names, cov.names[i], sep=" + ")
-        }
-      }
       formula.m0 <- as.formula(paste("pheno ~ ", names,sep = "+"))
       H0 <- rms::lrm(formula.m0)
       formula.m1 <- as.formula(paste("pheno ~ st.score", names, sep = "+"))
