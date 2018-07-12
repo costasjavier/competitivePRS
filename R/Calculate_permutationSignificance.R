@@ -30,13 +30,15 @@ Calculate_permutationSignificance <- function(path.to.plink.files, bfile = "tmp"
   if (!"p"  %in% colnames(sumGWAS)) stop("No \"p\" column in sumGWAS")
   if (!"effect"  %in% colnames(sumGWAS)) stop("No \"effect\" column in sumGWAS")
   if (!"IID" %in% colnames(Cov)) stop("No \"IID\" column in Cov")
-  if (length(subset(cov.names,cov.names %in% colnames(Cov))) != length(cov.names)) {
-    stop("Some covariate names in cov.names are not in the Cov dataframe")
+  # Basic check of covariates file
+  if (!is.null(Cov)){
+    if (!("IID" %in% colnames(Cov))) stop("No \"IID\" column in Cov")
+    if (length(subset(cov.names,cov.names %in% colnames(Cov))) != length(cov.names)) stop("Some covariate names in cov.names are not in the Cov dataframe")
+    if (is.null(cov.names)) stop ("Covariates names no specified")
   }
-
-  Nperm <- dim(Perm)[2]
+ 
   IncrR2 <- rep()
-  for (i in 1:Nperm) {
+  for (i in 1:dim(Nperm)[2]) {
 
     #----------------
     # Calculate PRS
@@ -60,7 +62,7 @@ Calculate_permutationSignificance <- function(path.to.plink.files, bfile = "tmp"
    #---------------------------------------------
 
     # Merge covariables with score, if any
-    if (missing(Cov)) {
+    if (is.null(Cov)) {
       data <- Scores
       # Calculating % missing
       data$percent_missing <- (max(data$CNT) - data$CNT) / max(data$CNT)
@@ -69,7 +71,7 @@ Calculate_permutationSignificance <- function(path.to.plink.files, bfile = "tmp"
       score <- data$SCORE
       miss <- data$percent_missing
       #Standardized score
-      st.score <- (score  -mean(score)) / sd(score)
+      st.score <- scale(score)
       # If there is no missing, there was an error in logistic regression. Check
       max.missing<-max(miss)
       if (max.missing > 0) {
@@ -81,39 +83,41 @@ Calculate_permutationSignificance <- function(path.to.plink.files, bfile = "tmp"
         H1 <- rms::lrm(pheno ~ st.score, tol = 0)
         permDR2 <- (H1$stats[10])
       }
-    } else if (!missing(Cov)){
+    } else if (!is.null(Cov)){
 
       # Choosing covariates
       cov.for.used <- colnames(Cov) %in% cov.names
-      used.cov <- Cov[, cov.for.used]
+      used.cov <- as.data.frame(Cov[, cov.for.used])
+      if (length(cov.names) == 1) colnames(used.cov) <- cov.names#If there is just one covariate, coercing to dataframe implies lost of name
       used.cov$IID <- Cov$IID
       used.cov.ord <- used.cov[order(used.cov$IID), ]
       Scores.ord <- Scores[order(Scores$IID), ]
-      for (i in 1:length(cov.names)) {
+      for (i in 1:dim(used.cov.ord)[2]) {
         assign(colnames(used.cov.ord)[i], used.cov.ord[, i])
       }
       pheno <- Scores.ord$PHENO
       score <- Scores.ord$SCORE
       # Standardized score
-      st.score <- (score - mean(score)) / sd(score)
+      st.score <- scale(score)
       names <- cov.names[1]
-      for (i in 2:length(cov.names)) {
+      if (length(cov.names) > 1) {
+        for (i in 2:length(cov.names)) {
         names <- paste(names, cov.names[i], sep="+")
-      }
-      formula.m0 <- as.formula(paste("pheno ~ miss", names, sep="+"))
-      formula.m1 <- as.formula(paste("pheno ~ st.score + miss", names, sep="+"))
-
+        }
+      }  
+   
       # If there is no missing, there was an error in logistic regression. Check
       Scores.ord$percent_missing <- (max(Scores.ord$CNT) - Scores.ord$CNT) / max(Scores.ord$CNT)
       miss <- Scores.ord$percent_missing
       max.missing <- max(miss)
       if (max.missing > 0) {
+        formula.m0 <- as.formula(paste("pheno ~ miss", names, sep="+"))
+        formula.m1 <- as.formula(paste("pheno ~ st.score + miss", names, sep="+"))
         H0 <- rms::lrm(formula.m0, tol = 0)
         H1 <- rms::lrm(formula.m1, tol = 0)
         # Increase in Nagelkerke's R2
         permDR2 <- (H1$stats[10] - H0$stats[10])
       } else {
-        names <- cov.names[1]
         formula.m0 <- as.formula(paste("pheno ~ ",names, sep="+"))
         H0 <- rms::lrm(formula.m0, tol = 0)
         formula.m1 <- as.formula(paste("pheno  ~ st.score", names, sep="+"))
