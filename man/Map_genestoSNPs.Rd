@@ -8,7 +8,7 @@ Map_genestoSNPs(geneset, bfile, path.to.plink.files, extra.kb = c(0, 0),
   output = "missing_genes.txt")
 }
 \arguments{
-\item{geneset}{List of genes from gene set, HGNC symbol or HGNC_ID, no header.}
+\item{geneset}{A dataframe of one column or an array with genes from gene set, HGNC symbol or NCBI gene ID, no header.}
 
 \item{bfile}{A string indicating the name of the PLINK binary file with data of the GWAS target sample, without file extension.}
 
