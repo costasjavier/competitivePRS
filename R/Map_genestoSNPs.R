@@ -4,7 +4,7 @@
 #'  including n bases at both edges of the coding region. It also generates a file with a list of genes from the gene set
 #'  not found in the hg19 (NCBI37.3) version of the human genome. This is useful to check for the correct name.
 #'
-#' @param geneset List of genes from gene set, HGNC symbol or HGNC_ID, no header.
+#' @param geneset A dataframe of one column or an array with genes from gene set, HGNC symbol or NCBI gene ID, no header.
 #' @param bfile A string indicating the name of the PLINK binary file with data of the GWAS target sample, without file extension.
 #' @param path.to.plink.files String with the full path to the three PLINK binary files (.bed, .bim, .fam)
 #' @param extra.kb An array of two numbers indicating the extra bases in kb to add at the 5' and 3' edges of the
@@ -22,19 +22,19 @@ Map_genestoSNPs <- function(geneset, bfile, path.to.plink.files, extra.kb=c(0,0)
     geneset <- as.data.frame(geneset)
   }
 
-  # Genes in gene set, first, assuming genenames as HGCN_ID (column 1 of hg19)
+  # Genes in gene set, first, assuming genenames as Gene_ID (column 1 of hg19)
   pos.genes <- subset(hg19, hg19$V1 %in% geneset[, 1])
   # Check for undetected genes
   if (dim(pos.genes)[1] != 0 & setequal(geneset[, 1], pos.genes$V1) != T){
     N<- length(subset(geneset[, 1], !geneset[,1] %in% pos.genes$V1))
-    warning("A total of ",N," genes from gene set were not found (written to output file)")
+    message("A total of ",N," genes from gene set were not found (written to output file)")
     # Writing missing genes to output file
     missing <- subset(geneset[, 1], !geneset[, 1] %in% pos.genes$V1)
     missing.file.name <- paste0(path.to.plink.files, output)
     write.table(x = missing, file = missing.file.name, append = F, quote = F, row.names = F, col.names = F)
-
+  }
   # Then, assuming genenames as HGCN_Symbol (column 6 of hg19)
-  } else if(dim(pos.genes)[1] == 0) {
+  if(dim(pos.genes)[1] == 0) {
     pos.genes <- subset(hg19, hg19$V6 %in% geneset[, 1])
     # Check for undetected genes
     if ( dim(pos.genes)[1] != 0 & setequal(geneset[, 1], pos.genes$V6) != T) {
@@ -45,7 +45,8 @@ Map_genestoSNPs <- function(geneset, bfile, path.to.plink.files, extra.kb=c(0,0)
       missing.file.name <- paste0(path.to.plink.files, output)
       write.table(x = missing, file = missing.file.name, append = F, quote = F, row.names = F, col.names = F)
     }
-  } else if (dim(pos.genes)[1] == 0) {
+  } 
+  if (dim(pos.genes)[1] == 0) {
     stop("Gene identifiers not in database")
     }
 
