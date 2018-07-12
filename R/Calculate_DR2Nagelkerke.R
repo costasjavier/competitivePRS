@@ -44,7 +44,9 @@ Calculate_DR2Nagelkerke <- function(SNPs.list, sumGWAS, amb.remove = FALSE, Cov 
   if (!is.null(Cov)){
     if (!("IID" %in% colnames(Cov))) stop("No \"IID\" column in Cov")
     if (length(subset(cov.names,cov.names %in% colnames(Cov))) != length(cov.names)) stop("Some covariate names in cov.names are not in the Cov dataframe")
-    }
+    if (is.null(cov.names)) stop ("Covariates names no specified")
+  }
+  if (is.null(Cov) & !is.null(cov.names)) stop("Covariate names specified but covariate file is lacked")
   #--------------------------------
   # Calculation of individual PRS
   #--------------------------------
@@ -161,11 +163,12 @@ Calculate_DR2Nagelkerke <- function(SNPs.list, sumGWAS, amb.remove = FALSE, Cov 
 
     # Choosing covariates
     cov.for.used <- colnames(Cov) %in% cov.names
-    used.cov <- Cov[, cov.for.used]
+    used.cov <- as.data.frame(Cov[, cov.for.used])
+    if (length(cov.names) == 1) colnames(used.cov) <- cov.names#If there is just one covariate, coercing to dataframe implies lost of name
     used.cov$IID <- Cov$IID
     used.cov.ord <- used.cov[order(used.cov$IID), ]
     Scores.ord <- Scores[order(Scores$IID), ]
-    for (i in 1:length(cov.names)) {
+    for (i in 1:dim(used.cov.ord)[2]) {
       assign(colnames(used.cov.ord)[i], used.cov.ord[, i])
     }
 
@@ -174,11 +177,12 @@ Calculate_DR2Nagelkerke <- function(SNPs.list, sumGWAS, amb.remove = FALSE, Cov 
 
     # Standardized score
     st.score <- scale(score)
-    names <- cov.names[1]
-    for (i in 2:length(cov.names)) {
+    names <- cov.names[1] 
+    if (length(cov.names) > 1){
+      for (i in 2:length(cov.names)) {
       names <- paste(names, cov.names[i], sep=" + ")
+      }
     }
-
     # If there is no missing, there was an error in logistic regression. Check
     Scores.ord$percent_missing <- (max(Scores.ord$CNT) - Scores.ord$CNT) / max(Scores.ord$CNT)
     miss <- Scores.ord$percent_missing
@@ -197,8 +201,10 @@ Calculate_DR2Nagelkerke <- function(SNPs.list, sumGWAS, amb.remove = FALSE, Cov 
       DR2 <- H1$stats[10] - H0$stats[10]
     } else {
       names <- cov.names[1]
-      for (i in 2:length(cov.names)) {
-        names <- paste(names, cov.names[i], sep=" + ")
+      if (length(cov.names) > 1){
+        for (i in 2:length(cov.names)) {
+          names <- paste(names, cov.names[i], sep=" + ")
+        }
       }
       formula.m0 <- as.formula(paste("pheno ~ ", names,sep = "+"))
       H0 <- rms::lrm(formula.m0)
