@@ -26,7 +26,7 @@ the non-effect allele at each SNP.}
 
 \item{bfile}{A string indicating the name of the PLINK binary file with data of the GWAS target sample, without extension.}
 
-\item{P.threshold}{A number indicating the P threshold of the GWAS discovery sample to include an SNP in the PRS model.}
+\item{P.threshold}{A number indicating the P threshold of the GWAS discovery sample to include an SNP in the PRS model. Default P.threshold = 1.}
 
 \item{cov.names}{An array with the names of covariates from the \code{Cov} dataframe to be included in the model.}
 
