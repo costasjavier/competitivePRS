@@ -18,5 +18,5 @@ A plot showing the distribution of pseudo-R2 for permutations and the actual SNP
 }
 \description{
 \code{Generate_Plot} returns a histogram representing the distribution of the Nagelkerke's pseudo-R2 values for the permuted SNPs sets.
-  A vertical red line with the value for the actual SNPs set is also shown. Its purpose is to get a fast visulazation of the results.
+  A vertical red line with the value for the actual SNPs set is also shown. Its purpose is to get a fast visualization of the results.
 }
