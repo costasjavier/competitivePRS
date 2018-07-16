@@ -8,14 +8,13 @@
 #' @param bfile A string indicating the name of the PLINK binary file with data of the GWAS target sample, without file extension.
 #' @param path.to.plink.files String with the full path to the three PLINK binary files (.bed, .bim, .fam)
 #' @param extra.kb An array of two numbers indicating the extra bases in kb to add at the 5' and 3' edges of the
-#'   coding region for mapping SNPs to genes.
+#'   coding region for mapping SNPs to genes. Default extra.kb=c(0,0).
 #' @param output A string indicating the name of the output file to write the list of genes not identified. This file
 #'   is generated in the path defined in \code{path.to.plink.files}.
 #'
 #' @return A dataframe of one column with the SNPs mapping your genes, identified by chromosome and position (ex. 4:103188709).
 
 Map_genestoSNPs <- function(geneset, bfile, path.to.plink.files, extra.kb=c(0,0), output = "missing_genes.txt") {
-
 
   # If list of genes not a dataframe
   if (!is.data.frame(geneset)) {
@@ -68,11 +67,10 @@ Map_genestoSNPs <- function(geneset, bfile, path.to.plink.files, extra.kb=c(0,0)
    gene.limits$chrom <- paste0("chr", gene.limits$chrom)
   }
 
-
   # Creating GRanges object with intervals
   int.gr <- as(gene.limits, "GRanges")
 
-  #preparing input SNPs GRanges
+  #Preparing input SNPs GRanges
   bfile.path<-paste0(path.to.plink.files,bfile,".bim")
   SNPs <- read.table(bfile.path,header = F)
   SNPs$chrom <- paste0("chr", SNPs$V1)
