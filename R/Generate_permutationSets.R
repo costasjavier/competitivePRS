@@ -43,12 +43,11 @@ Generate_permutationSets <- function(input.perm, sumGWAS, path.to.plink.files, b
 
   # Identify input SNPs not in SNPsnap
   absent <- subset(input.perm, !input.perm %in% SNPsnap.subsets.common$snpid)
-  N <- length(absent)
-  if (N == 1) {
+  if (length(absent) == 1) {
     message("\nThere are no data on SNP properties for one SNP from the SNP set")
   }
-  if (N > 1) {
-    message("\nThere are no data on SNP properties for ", N, " SNPs from the SNP set")
+  if (length(absent) > 1) {
+    message("\nThere are no data on SNP properties for ", length(absent), " SNPs from the SNP set")
   }
   present <- subset(input.perm, input.perm %in% SNPsnap.subsets.common$snpid)
 
@@ -59,8 +58,8 @@ Generate_permutationSets <- function(input.perm, sumGWAS, path.to.plink.files, b
   permut <- data.frame(matrix(NA, nrow = length(input.perm), ncol = n.perm))
 
   #Add absent SNPs
-  if (N > 0) {
-    for (i in 1:N) {
+  if (length(absent) > 0) {
+    for (i in 1:length(absent)) {
     permut[i, ] <- rep(absent[i], n.perm)
     }
   }
@@ -69,7 +68,7 @@ Generate_permutationSets <- function(input.perm, sumGWAS, path.to.plink.files, b
     pool <- subset(SNPsnap.subsets.common, SNPsnap.subsets.common$subset == datos.input$subset[i])
     #Fill data.frame
     selected <- sample(x = pool$snpid, size = n.perm, replace = T)
-    permut[N + i, ] <- selected
+    permut[length(absent) + i, ] <- selected
   }
 
  return(permut)
