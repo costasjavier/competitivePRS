@@ -1,7 +1,7 @@
 #' Generating the histogram with the distribution of permuted pseudo-R2 values
 #'
 #' \code{Generate_Plot} returns a histogram representing the distribution of the Nagelkerke's pseudo-R2 values for the permuted SNPs sets.
-#'   A vertical red line with the value for the actual SNPs set is also shown. Its purpose is to get a fast visulazation of the results.
+#'   A vertical red line with the value for the actual SNPs set is also shown. Its purpose is to get a fast visualization of the results.
 #'
 #' @param permDR2 Array with pseudo-R2 values from permutations. It is the second element of the list generated as output by
 #'   the \code{Calculate_permutationSignificance} function of this package.
