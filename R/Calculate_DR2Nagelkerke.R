@@ -18,7 +18,7 @@
 #'   the non-effect allele at each SNP.
 #' @param Cov A dataframe with a column "IID"  for sample identification and covariates with specific names.
 #' @param cov.names An array with the names of covariates from the \code{Cov} dataframe to be included in the model.
-#' @param P.threshold A number indicating the P threshold of the GWAS discovery sample to include an SNP in the PRS model.
+#' @param P.threshold A number indicating the P threshold of the GWAS discovery sample to include an SNP in the PRS model. Default P.threshold = 1.
 #' @param output.file A string indicating the name of the output file to write the main data of the analysis. This file
 #'   is generated in the path defined in \code{path.to.plink.files}
 #' @param path.to.plink.files String with the full path to the three PLINK binary files (.bed, .bim, .fam)
@@ -36,7 +36,7 @@ Calculate_DR2Nagelkerke <- function(SNPs.list, sumGWAS, amb.remove = FALSE, Cov 
                                     cov.names = NULL, better.coef = NULL, output.file = "output") {
 
   # Basic check of sumGWAS file
-  if (!"snpid"  %in% colnames(sumGWAS)) stop("No \"snpid\" column in sumGWAS")
+  if (!"snpid" %in% colnames(sumGWAS)) stop("No \"snpid\" column in sumGWAS")
   if (!"a1"  %in% colnames(sumGWAS)) stop("No \"a1\" column in sumGWAS")
   if (!"p"  %in% colnames(sumGWAS)) stop("No \"p\" column in sumGWAS")
   if (!"effect"  %in% colnames(sumGWAS)) stop("No \"effect\" column in sumGWAS")
@@ -48,6 +48,7 @@ Calculate_DR2Nagelkerke <- function(SNPs.list, sumGWAS, amb.remove = FALSE, Cov 
     if (is.null(cov.names)) stop ("Covariates names no specified")
   }
   if (is.null(Cov) & !is.null(cov.names)) stop("Covariate names specified but covariate file is lacked")
+  
   #--------------------------------
   # Calculation of individual PRS
   #--------------------------------
@@ -164,7 +165,7 @@ Calculate_DR2Nagelkerke <- function(SNPs.list, sumGWAS, amb.remove = FALSE, Cov 
     # Choosing covariates
     cov.for.used <- colnames(Cov) %in% cov.names
     used.cov <- as.data.frame(Cov[, cov.for.used])
-    if (length(cov.names) == 1) colnames(used.cov) <- cov.names#If there is just one covariate, coercing to dataframe implies lost of name
+    if (length(cov.names) == 1) colnames(used.cov) <- cov.names#If there is just one covariate, coercing to dataframe implies lost of colnames
     used.cov$IID <- Cov$IID
     used.cov.ord <- used.cov[order(used.cov$IID), ]
     Scores.ord <- Scores[order(Scores$IID), ]
@@ -188,7 +189,6 @@ Calculate_DR2Nagelkerke <- function(SNPs.list, sumGWAS, amb.remove = FALSE, Cov 
     miss <- Scores.ord$percent_missing
     max.missing <- max(miss)
     if (max.missing > 0) {
-      #(fmla <- as.formula(paste("y ~ ", paste(xnam, collapse= "+"))))
       formula.m0 <- as.formula(paste("pheno ~ miss", names, sep = " + "))
       formula.m1 <- as.formula(paste("pheno ~ st.score + miss", names, sep =  " + "))
       H0 <- rms::lrm(formula.m0)
