@@ -15,7 +15,7 @@ Map_genestoSNPs(geneset, bfile, path.to.plink.files, extra.kb = c(0, 0),
 \item{path.to.plink.files}{String with the full path to the three PLINK binary files (.bed, .bim, .fam)}
 
 \item{extra.kb}{An array of two numbers indicating the extra bases in kb to add at the 5' and 3' edges of the
-coding region for mapping SNPs to genes.}
+coding region for mapping SNPs to genes. Default extra.kb=c(0,0).}
 
 \item{output}{A string indicating the name of the output file to write the list of genes not identified. This file
 is generated in the path defined in \code{path.to.plink.files}.}
