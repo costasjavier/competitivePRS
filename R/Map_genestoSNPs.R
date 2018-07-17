@@ -20,7 +20,8 @@ Map_genestoSNPs <- function(geneset, bfile, path.to.plink.files, extra.kb=c(0,0)
   if (!is.data.frame(geneset)) {
     geneset <- as.data.frame(geneset)
   }
-
+    geneset <-toupper(geneset)
+    
   # Genes in gene set, first, assuming genenames as Gene_ID (column 1 of hg19)
   pos.genes <- subset(hg19, hg19$V1 %in% geneset[, 1])
   # Check for undetected genes
