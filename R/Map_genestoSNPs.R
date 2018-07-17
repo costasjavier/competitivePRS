@@ -34,7 +34,7 @@ Map_genestoSNPs <- function(geneset, bfile, path.to.plink.files, extra.kb=c(0,0)
   }
   # Then, assuming genenames as HGCN_Symbol (column 6 of hg19)
   if(dim(pos.genes)[1] == 0) {
-    pos.genes <- subset(hg19, hg19$V6 %in% geneset[, 1])
+    pos.genes <- subset(hg19, hg19$V6 %in% toupper(geneset[, 1]))
     # Check for undetected genes
     if ( dim(pos.genes)[1] != 0 & setequal(geneset[, 1], pos.genes$V6) != T) {
       N <- length(subset(geneset[, 1], !geneset[, 1] %in% pos.genes$V6))
