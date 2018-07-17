@@ -24,11 +24,11 @@ Map_genestoSNPs <- function(geneset, bfile, path.to.plink.files, extra.kb=c(0,0)
   # Genes in gene set, first, assuming genenames as Gene_ID (column 1 of hg19)
   pos.genes <- subset(hg19, hg19$V1 %in% toupper(geneset[, 1]))
   # Check for undetected genes
-  if (dim(pos.genes)[1] != 0 & setequal(geneset[, 1], pos.genes$V1) != T){
-    N<- length(subset(geneset[, 1], !geneset[,1] %in% pos.genes$V1))
+  if (dim(pos.genes)[1] != 0 & setequal(toupper(geneset[, 1]), pos.genes$V1) != T){
+    N<- length(subset(geneset[, 1], !toupper(geneset[,1]) %in% pos.genes$V1))
     message("A total of ",N," genes from gene set were not found (written to output file)")
     # Writing missing genes to output file
-    missing <- subset(geneset[, 1], !geneset[, 1] %in% pos.genes$V1)
+    missing <- subset(geneset[, 1], !toupper(geneset[, 1]) %in% pos.genes$V1)
     missing.file.name <- paste0(path.to.plink.files, output)
     write.table(x = missing, file = missing.file.name, append = F, quote = F, row.names = F, col.names = F)
   }
@@ -36,11 +36,11 @@ Map_genestoSNPs <- function(geneset, bfile, path.to.plink.files, extra.kb=c(0,0)
   if(dim(pos.genes)[1] == 0) {
     pos.genes <- subset(hg19, hg19$V6 %in% toupper(geneset[, 1]))
     # Check for undetected genes
-    if ( dim(pos.genes)[1] != 0 & setequal(geneset[, 1], pos.genes$V6) != T) {
-      N <- length(subset(geneset[, 1], !geneset[, 1] %in% pos.genes$V6))
+    if ( dim(pos.genes)[1] != 0 & setequal(toupper(geneset[, 1]), pos.genes$V6) != T) {
+      N <- length(subset(geneset[, 1], !toupper(geneset[, 1]) %in% pos.genes$V6))
       message("A total of ",N," genes from gene set were not found (written to output file)")
       # Writing missing genes to output file
-      missing <- subset(geneset[, 1], !geneset[, 1] %in% pos.genes$V6)
+      missing <- subset(geneset[, 1], !toupper(geneset[, 1]) %in% pos.genes$V6)
       missing.file.name <- paste0(path.to.plink.files, output)
       write.table(x = missing, file = missing.file.name, append = F, quote = F, row.names = F, col.names = F)
     }
