@@ -112,7 +112,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>This tutorial explains the different steps implemented in <code>competitivePRS</code> to obtain a permuted <em>P</em> value for the significance of the PRS based on a SNP set in comparison with genomic background, i.e. random SNP sets with similar properties of LD, MAF and location in reference to genes.</p>
 <div id="from-genes-to-snps" class="section level3">
 <h3>3.1. From genes to SNPs <a name="map"></a></h3>
-<p>The <code>Map_genestoSNPs</code> function takes five arguments. The first argument, <code>geneset</code> is a list of genes using the HGNC symbol (such as SLC39A8) or NCBI gene ID (such as 20862) for identification, but never a combination of both. This list may be an array or a dataframe with just one column. Please, note that gene symbols are in capital letters. For instance,</p>
+<p>The <code>Map_genestoSNPs</code> function takes five arguments. The first argument, <code>geneset</code> is a list of genes using the HGNC symbol (such as SLC39A8) or NCBI gene ID (such as 20862) for identification, but never a combination of both. This list may be an array or a dataframe with just one column. For instance,</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my.gene.list &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;COMT&quot;</span>, <span class="st">&quot;PRODH&quot;</span>, <span class="st">&quot;TTC28&quot;</span>, <span class="st">&quot;MTMR3&quot;</span>, <span class="st">&quot;FFFF&quot;</span>)
 my.gene.list</code></pre></div>
 <pre><code>## [1] &quot;COMT&quot;  &quot;PRODH&quot; &quot;TTC28&quot; &quot;MTMR3&quot; &quot;FFFF&quot;</code></pre>
