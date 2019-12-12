@@ -34,7 +34,7 @@
 #'   the \code{rms} package), and a better coefficient of determination, if requested.
 #'
 
-Calculate_DR2Nagelkerke <- function(SNPs.list, sumGWAS, amb.remove = FALSE, mew.bfiles = FALSE, Cov = NULL, path.to.plink.files, bfile, P.threshold = 1,
+Calculate_DR2Nagelkerke <- function(SNPs.list, sumGWAS, amb.remove = FALSE, new.bfiles = FALSE, Cov = NULL, path.to.plink.files, bfile, P.threshold = 1,
                                     cov.names = NULL, better.coef = NULL, output.file = "output") {
 
   # Basic check of sumGWAS file
