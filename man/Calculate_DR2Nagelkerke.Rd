@@ -4,9 +4,19 @@
 \alias{Calculate_DR2Nagelkerke}
 \title{Calculating the increase of pseudo-R2 of Nagelkerke due to PRS}
 \usage{
-Calculate_DR2Nagelkerke(SNPs.list, sumGWAS, amb.remove = FALSE, Cov = NULL,
-  path.to.plink.files, bfile, P.threshold = 1, cov.names = NULL,
-  better.coef = NULL, output.file = "output")
+Calculate_DR2Nagelkerke(
+  SNPs.list,
+  sumGWAS,
+  amb.remove = FALSE,
+  mew.bfiles = FALSE,
+  Cov = NULL,
+  path.to.plink.files,
+  bfile,
+  P.threshold = 1,
+  cov.names = NULL,
+  better.coef = NULL,
+  output.file = "output"
+)
 }
 \arguments{
 \item{SNPs.list}{A dataframe with one column,indicating the SNPs belonging to the gene set, in the format chr:position.
@@ -18,7 +28,7 @@ The "effect" column indicates the effect attributed to allele "a1", as logOR (be
 
 \item{amb.remove}{A logical indicating if SNPs with strand ambiguity (i.e. A<->T and C<->G) have to be removed from sumGWAS
 before the estimation of PRS. If \code{TRUE}, the sumGWAS has to include an additional column with name "a2" to indicate
-the non-effect allele at each SNP.}
+the non-effect allele at each SNP. Default \code{FALSE}.}
 
 \item{Cov}{A dataframe with a column "IID"  for sample identification and covariates with specific names.}
 
@@ -36,6 +46,9 @@ liability scale and adjusted for ascertainment bias. See Lee et al (2012).}
 
 \item{output.file}{A string indicating the name of the output file to write the main data of the analysis. This file
 is generated in the path defined in \code{path.to.plink.files}}
+
+\item{new.bfiles}{A logical indicating if new bfiles have to be generated, replacing SNP_ID by chr:pos and removing duplicated
+and triallelic SNPs. If \code{TRUE}, new bfiles with the \code{tmp} name will be generated. Default \code{FALSE}.}
 }
 \value{
 A list with four elements. A number representing the increase in pseudo-R2 of Nagelkerke, an array of SNPs
