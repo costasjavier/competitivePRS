@@ -90,7 +90,7 @@ Map_genestoSNPs <- function(geneset, bfile, path.to.plink.files, extra.kb=c(0,0)
   # Transforming to input for Calculate_DR2Nagelkerke function
   list$chrom <- gsub(pattern = "chr", replacement = "", x = list$chrom)
   list$V1 <- paste(list$chrom, list$start, sep=":")
-  list.pos <- as.data.frame(list$V1)
+  list.pos <- unique(as.data.frame(list$V1))
   colnames(list.pos) <- "V1"
   if (dim(list.pos)[1] == 0){
     message("\nNo SNP maps within your genes!" )
