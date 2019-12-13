@@ -100,7 +100,7 @@ Calculate_DR2Nagelkerke <- function(SNPs.list, sumGWAS, amb.remove = FALSE, new.
   if (new.bfiles == TRUE){
   arg1 <- paste("--bfile", paste0(path.to.plink.files, "tmp"), sep=" ")
     } else if (new.bfiles == FALSE) {
-  arg1 <- paste("--bfile", paste0(path.to.plink.files, "tmp"), sep=" ") 
+  arg1 <- paste("--bfile", paste0(path.to.plink.files, bfile), sep=" ") 
   }
   arg2 <- paste("--clump", paste0(path.to.plink.files, "For.clumping"), sep=" ")
   arg3 <- paste("--out", paste0(path.to.plink.files, "clumped"), sep=" ")
